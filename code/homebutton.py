@@ -1,6 +1,5 @@
 import pygame
-
-class Button():
+class HomeButton():
     def __init__(self, x, y, image, screen, scale):
         width = image.get_width()
         height = image.get_height()
