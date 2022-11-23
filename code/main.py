@@ -1,16 +1,21 @@
-import pygame, sys
+import pygame, sys, time
 from gamesettings import *
 from homebutton import HomeButton
 from gameoverbutton import GameOverButton
+from background import Background
 
 class Game():
     def __init__(self):
         pygame.init()
         self.screen_Size = pygame.display.set_mode((window_Width, window_Height))
         pygame.display.set_caption('FlappyBird Mock')
+        self.clock = pygame.time.Clock()
 
         # setting the game state
-        self.gate_State = 'game_over'
+        self.game_State = 'play'
+
+        # setting sprite groups
+        self.all_sprites = pygame.sprite.Group()
 
         # importing homepage/game over page buttons and background image
         self.start_Btn = pygame.image.load('../images/background/home/start_btn.png').convert_alpha()
@@ -39,8 +44,16 @@ class Game():
         self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')
         self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 2/5))
 
+        # importing the background image for the play page and calculating the scaling factor
+        bkg_Height = pygame.image.load('../images/background/game/background.jpg').get_height()
+        self.scaling = window_Height / bkg_Height
+
+        # sprite setup
+        Background(self.all_sprites, self.scaling)
+
+
     def home(self):
-        while self.gate_State == 'home':
+        while self.game_State == 'home':
 
             # setting the background
             self.screen_Size.blit(self.home_Bg, self.home_Bg_Rect)
@@ -65,7 +78,7 @@ class Game():
             pygame.display.update()
 
     def game_over(self):
-        while self.gate_State == 'game_over':
+        while self.game_State == 'game_over':
 
             # displaying the images and buttons and score achieved for the current game
             self.screen_Size.fill('Black')
@@ -91,6 +104,30 @@ class Game():
 
             pygame.display.update()
 
+    def play(self):
+        last_time = time.time()
+
+        while self.game_State == 'play':
+
+            # creating the delta time
+            delta_Time = time.time() - last_time
+            last_time = time.time()
+
+            # checks the events while game is running
+            for event in pygame.event.get():
+
+                # closes the window
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+
+
+            self.all_sprites.update(delta_Time)
+            self.all_sprites.draw(self.screen_Size)
+
+            pygame.display.update()
+            self.clock.tick(FPS)
+
 if __name__ == '__main__':
     game = Game()
-    game.game_over()
+    game.play()
