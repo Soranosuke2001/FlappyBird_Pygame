@@ -53,7 +53,6 @@ class Game():
         Background(self.all_sprites, self.scaling)
         self.player = Player(self.all_sprites, self.scaling / 25)
 
-
     def home(self):
         while self.game_State == 'home':
 
@@ -122,6 +121,10 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                # checks if the user pressed the space key to jump
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    self.player.player_jump()
 
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)

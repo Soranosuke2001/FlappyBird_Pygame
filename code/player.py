@@ -12,5 +12,17 @@ class Player(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(midleft = (window_Width / 20, window_Height / 2))
         self.pos = pygame.math.Vector2(self.rect.topleft)
 
+        # setting the player movements
+        self.gravity = 600
+        self.direction = 0
+
+    def player_gravity(self, delta_Time):
+        self.direction += self.gravity * delta_Time
+        self.pos.y += self.direction * delta_Time
+        self.rect.y = round(self.pos.y)
+
+    def player_jump(self):
+        self.direction = -400
+
     def update(self, delta_Time):
-        pass
+        self.player_gravity(delta_Time)
