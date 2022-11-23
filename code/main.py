@@ -3,6 +3,7 @@ from gamesettings import *
 from homebutton import HomeButton
 from gameoverbutton import GameOverButton
 from background import Background
+from player import Player
 
 class Game():
     def __init__(self):
@@ -50,6 +51,7 @@ class Game():
 
         # sprite setup
         Background(self.all_sprites, self.scaling)
+        self.player = Player(self.all_sprites, self.scaling / 25)
 
 
     def home(self):
@@ -120,7 +122,6 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
 
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)
