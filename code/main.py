@@ -4,6 +4,7 @@ from homebutton import HomeButton
 from gameoverbutton import GameOverButton
 from background import Background
 from player import Player
+from obstacle import Obstacle
 
 class Game():
     def __init__(self):
@@ -17,6 +18,7 @@ class Game():
 
         # setting sprite groups
         self.all_sprites = pygame.sprite.Group()
+        self.collision_sprites = pygame.sprite.Group()
 
         # importing homepage/game over page buttons and background image
         self.start_Btn = pygame.image.load('../images/background/home/start_btn.png').convert_alpha()
@@ -52,6 +54,10 @@ class Game():
         # sprite setup
         Background(self.all_sprites, self.scaling)
         self.player = Player(self.all_sprites, self.scaling / 25)
+
+        # setting up the obstacle timer
+        self.obstacle_Timer = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.obstacle_Timer, 1500)
 
     def home(self):
         while self.game_State == 'home':
@@ -105,6 +111,10 @@ class Game():
 
             pygame.display.update()
 
+    def display_pipe(self):
+        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up')
+        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down')
+
     def play(self):
         last_time = time.time()
 
@@ -126,6 +136,10 @@ class Game():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.player.player_jump()
 
+                if event.type == self.obstacle_Timer:
+                    self.display_pipe()
+
+            self.player.draw(self.screen_Size)
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)
 

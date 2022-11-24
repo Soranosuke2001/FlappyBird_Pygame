@@ -16,6 +16,9 @@ class Player(pygame.sprite.Sprite):
         self.gravity = 600
         self.direction = 0
 
+    def draw(self, screen_Size):
+        screen_Size.blit(self.image, self.rect)
+
     def player_gravity(self, delta_Time):
         self.direction += self.gravity * delta_Time
         self.pos.y += self.direction * delta_Time
