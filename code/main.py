@@ -14,7 +14,7 @@ class Game():
         self.clock = pygame.time.Clock()
 
         # setting the game state
-        self.game_State = 'play'
+        self.game_State = 'home'
 
         # setting sprite groups
         self.all_sprites = pygame.sprite.Group()
@@ -45,8 +45,6 @@ class Game():
         self.score = 0
         self.score_Offset = 0
         self.text_Font = pygame.font.Font('../font/Pixeltype.ttf', 50)
-        self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')
-        self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 2/5))
 
         # importing the background image for the play page and calculating the scaling factor
         bkg_Height = pygame.image.load('../images/background/game/background.jpg').get_height()
@@ -68,7 +66,9 @@ class Game():
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
-                print('Starting game')
+                self.game_State = 'play'
+                self.score_Offset = pygame.time.get_ticks()
+                self.play()
                 
             # program will terminate if the user pressed the exit button
             if self.exit_Button.draw():
@@ -90,12 +90,17 @@ class Game():
 
             # displaying the images and buttons and score achieved for the current game
             self.screen_Size.fill('Black')
+            self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')   
+            self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 2/5))
             self.screen_Size.blit(self.game_Over_Img_Scaled, self.game_Over_Img_Rect)
             self.screen_Size.blit(self.score_Text, self.score_Text_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
-                print('Starting game')
+                self.game_State = 'play'
+                self.score_Offset = pygame.time.get_ticks()
+
+                self.player = Player(self.all_sprites, self.scaling / 25)
                 
             # program will terminate if the user pressed the exit button
             if self.exit_Button.draw():
@@ -118,18 +123,23 @@ class Game():
 
     def player_collision(self):
         if pygame.sprite.spritecollide(self.player, self.collision_sprites, False, pygame.sprite.collide_mask) or self.player.rect.top <= 0 or self.player.rect.bottom >= window_Height:
-            self.game_State = 'game_over'
             self.player.kill()
+            self.game_State = 'game_over'
 
             for sprite in self.collision_sprites.sprites():
                 if sprite.sprite_Type == 'pipe':
                     sprite.kill()
 
+            self.game_State = 'game_over'
+            self.game_over()
+
     def display_score(self):
         if self.game_State == 'play':
+            # using the time the game has been running as the score
             self.score = (pygame.time.get_ticks() - self.score_Offset) // 1000
             score_Pos = window_Height / 10
 
+        # setting the styling and the location to put the score
         score_Text = self.text_Font.render(f'{self.score}', False, 'White')
         score_Rect = score_Text.get_rect(midtop = (window_Width / 2, score_Pos))
         self.screen_Size.blit(score_Text, score_Rect)
@@ -138,8 +148,6 @@ class Game():
         last_time = time.time()
 
         while self.game_State == 'play':
-
-            # self.score_Offset = pygame.time.get_ticks()
 
             # creating the delta time
             delta_Time = time.time() - last_time
@@ -157,6 +165,7 @@ class Game():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.player.player_jump()
 
+                # prints a pipe on the screen everytime the timer is activated
                 if event.type == self.obstacle_Timer:
                     self.display_pipe()
 
@@ -170,6 +179,25 @@ class Game():
             pygame.display.update()
             self.clock.tick(FPS)
 
+    # def run(self):
+        while True:
+            if self.game_State == 'home':
+                self.game_State = self.home()
+
+            if self.game_State == 'play':
+                self.play()
+
+            if self.game_State == 'game_over':
+                self.game_over()
+
+            # checks the events while game is running
+            for event in pygame.event.get():
+
+                # closes the window
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+            
 if __name__ == '__main__':
     game = Game()
-    game.play()
+    game.home()
