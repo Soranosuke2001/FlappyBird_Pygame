@@ -115,6 +115,15 @@ class Game():
         self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up')
         self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down')
 
+    def player_collision(self):
+        if pygame.sprite.spritecollide(self.player, self.collision_sprites, False, pygame.sprite.collide_mask) or self.player.rect.top <= 0 or self.player.rect.bottom >= window_Height:
+            self.game_State = 'game_over'
+            self.player.kill()
+
+            for sprite in self.collision_sprites.sprites():
+                if sprite.sprite_Type == 'pipe':
+                    sprite.kill()
+
     def play(self):
         last_time = time.time()
 
@@ -142,6 +151,8 @@ class Game():
             self.player.draw(self.screen_Size)
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)
+
+            self.player_collision()
 
             pygame.display.update()
             self.clock.tick(FPS)
