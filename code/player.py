@@ -20,6 +20,9 @@ class Player(pygame.sprite.Sprite):
         # setting the mask for the player
         self.mask = pygame.mask.from_surface(self.image)
 
+        # importing the jump sound effect
+        self.jump_Sound = pygame.mixer.Sound('../music/jump.wav')
+
     def draw(self, screen_Size):
         screen_Size.blit(self.image, self.rect)
 
@@ -30,6 +33,7 @@ class Player(pygame.sprite.Sprite):
 
     def player_jump(self):
         self.direction = -400
+        self.jump_Sound.play()
 
     def update(self, delta_Time):
         self.player_gravity(delta_Time)

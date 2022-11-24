@@ -1,4 +1,5 @@
 import pygame, sys, time
+from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
 from gameoverbutton import GameOverButton
@@ -9,6 +10,7 @@ from obstacle import Obstacle
 class Game():
     def __init__(self):
         pygame.init()
+        mixer.init()
         self.screen_Size = pygame.display.set_mode((window_Width, window_Height))
         pygame.display.set_caption('FlappyBird Mock')
         self.clock = pygame.time.Clock()
@@ -57,6 +59,13 @@ class Game():
         # setting up the obstacle timer
         self.obstacle_Timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.obstacle_Timer, 1500)
+
+        # playing background music
+        mixer.music.load('../music/background_music.mp3')
+        mixer.music.play(-1)
+
+        # import game over sound effect
+        self.game_Over_Sound = pygame.mixer.Sound('../music/dead.wav')
 
     def home(self):
         while self.game_State == 'home':
@@ -129,6 +138,9 @@ class Game():
             for sprite in self.collision_sprites.sprites():
                 if sprite.sprite_Type == 'pipe':
                     sprite.kill()
+
+            # play game over sound effect
+            self.game_Over_Sound.play()
 
             self.game_State = 'game_over'
             self.game_over()
