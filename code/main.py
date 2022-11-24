@@ -6,6 +6,7 @@ from gameoverbutton import GameOverButton
 from background import Background
 from player import Player
 from obstacle import Obstacle
+from random import randint
 
 class Game():
     def __init__(self):
@@ -57,8 +58,10 @@ class Game():
         self.player = Player(self.all_sprites, self.scaling / 25)
 
         # setting up the obstacle timer
+        self.pipe_Frequency = 1500
         self.obstacle_Timer = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.obstacle_Timer, 1500)
+        pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
+
 
         # playing background music
         mixer.music.load('../music/background_music.mp3')
@@ -127,8 +130,17 @@ class Game():
             pygame.display.update()
 
     def display_pipe(self):
-        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up')
-        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down')
+        pipe_Offset_Lower = randint(50, 100)
+        pipe_Offset_Upper = randint(400, 500)
+        if 10 < self.score < 20:
+            pipe_Offset_Lower = randint(50, 100)
+            pipe_Offset_Upper = randint(200, 300)
+
+        if self.score > 20:
+            pipe_Offset_Lower = randint(80, 100)
+            pipe_Offset_Upper = randint(200, 250)
+        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', pipe_Offset_Lower, pipe_Offset_Upper)
+        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', pipe_Offset_Lower, pipe_Offset_Upper)
 
     def player_collision(self):
         if pygame.sprite.spritecollide(self.player, self.collision_sprites, False, pygame.sprite.collide_mask) or self.player.rect.top <= 0 or self.player.rect.bottom >= window_Height:
@@ -177,6 +189,9 @@ class Game():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.player.player_jump()
 
+                if self.pipe_Frequency > 500:
+                    self.pipe_Frequency -= 100
+                pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
                 # prints a pipe on the screen everytime the timer is activated
                 if event.type == self.obstacle_Timer:
                     self.display_pipe()
