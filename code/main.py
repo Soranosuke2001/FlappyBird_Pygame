@@ -18,6 +18,7 @@ class Game():
 
         # setting the game state
         self.game_State = 'home'
+        self.play_Game = False
 
         # setting sprite groups
         self.all_sprites = pygame.sprite.Group()
@@ -75,6 +76,12 @@ class Game():
 
             # setting the background
             self.screen_Size.blit(self.home_Bg, self.home_Bg_Rect)
+
+            # adding the image of kirby on the home screen
+            home_Kirby_Img = pygame.image.load('../images/background/home/kirby2.png')
+            home_Kirby_Img_Scaled = pygame.transform.scale(home_Kirby_Img, (int(home_Kirby_Img.get_width() / 2), int(home_Kirby_Img.get_height() / 2)))
+            home_Kirby_Rect = home_Kirby_Img_Scaled.get_rect(midtop = (window_Width / 2, window_Height / 3))
+            self.screen_Size.blit(home_Kirby_Img_Scaled, home_Kirby_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
@@ -148,12 +155,10 @@ class Game():
             self.game_State = 'game_over'
 
             for sprite in self.collision_sprites.sprites():
-                if sprite.sprite_Type == 'pipe':
-                    sprite.kill()
+                sprite.kill()
 
             # play game over sound effect
             self.game_Over_Sound.play()
-
             self.game_State = 'game_over'
             self.game_over()
 
@@ -190,18 +195,22 @@ class Game():
                     self.player.player_jump()
 
                 if self.pipe_Frequency > 500:
-                    self.pipe_Frequency -= 100
+                    self.pipe_Frequency -= 50
+
                 pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
+
                 # prints a pipe on the screen everytime the timer is activated
                 if event.type == self.obstacle_Timer:
                     self.display_pipe()
 
-            self.player.draw(self.screen_Size)
+            
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)
 
+            self.player.draw(self.screen_Size)
             self.player_collision()
             self.display_score()
+
 
             pygame.display.update()
             self.clock.tick(FPS)
