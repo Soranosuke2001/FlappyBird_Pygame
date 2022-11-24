@@ -43,6 +43,7 @@ class Game():
 
         # creating the score to be displayed on the game over page
         self.score = 0
+        self.score_Offset = 0
         self.text_Font = pygame.font.Font('../font/Pixeltype.ttf', 50)
         self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')
         self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 2/5))
@@ -124,10 +125,21 @@ class Game():
                 if sprite.sprite_Type == 'pipe':
                     sprite.kill()
 
+    def display_score(self):
+        if self.game_State == 'play':
+            self.score = (pygame.time.get_ticks() - self.score_Offset) // 1000
+            score_Pos = window_Height / 10
+
+        score_Text = self.text_Font.render(f'{self.score}', False, 'White')
+        score_Rect = score_Text.get_rect(midtop = (window_Width / 2, score_Pos))
+        self.screen_Size.blit(score_Text, score_Rect)
+
     def play(self):
         last_time = time.time()
 
         while self.game_State == 'play':
+
+            # self.score_Offset = pygame.time.get_ticks()
 
             # creating the delta time
             delta_Time = time.time() - last_time
@@ -153,6 +165,7 @@ class Game():
             self.all_sprites.draw(self.screen_Size)
 
             self.player_collision()
+            self.display_score()
 
             pygame.display.update()
             self.clock.tick(FPS)
