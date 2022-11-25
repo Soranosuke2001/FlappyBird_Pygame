@@ -7,7 +7,7 @@ class Player(pygame.sprite.Sprite):
         self.sprite_Type = 'player'
 
         # importing image of kirby
-        kirby_Img = pygame.image.load('../images/player/kirby.png').convert_alpha()
+        kirby_Img = pygame.image.load('../images/player/kirby1.png').convert_alpha()
         kirby_Img_Scaled = pygame.transform.scale(kirby_Img, pygame.math.Vector2(kirby_Img.get_size()) * scaling)
         self.image = kirby_Img_Scaled
         self.rect = self.image.get_rect(midleft = (window_Width / 20, window_Height / 2))
@@ -32,7 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = round(self.pos.y)
 
     def player_jump(self):
-        self.direction = -400
+        self.direction = -360
         self.jump_Sound.play()
 
     def update(self, delta_Time):

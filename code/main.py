@@ -6,7 +6,7 @@ from gameoverbutton import GameOverButton
 from background import Background
 from player import Player
 from obstacle import Obstacle
-from random import randint
+from random import randint, choice
 
 class Game():
     def __init__(self):
@@ -63,7 +63,6 @@ class Game():
         self.obstacle_Timer = pygame.USEREVENT + 1
         pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
 
-
         # playing background music
         mixer.music.load('../music/background_music.mp3')
         mixer.music.play(-1)
@@ -107,6 +106,7 @@ class Game():
     def game_over(self):
         while self.game_State == 'game_over':
 
+
             # displaying the images and buttons and score achieved for the current game
             self.screen_Size.fill('Black')
             self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')   
@@ -116,6 +116,7 @@ class Game():
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
+                self.score = 0
                 self.game_State = 'play'
                 self.score_Offset = pygame.time.get_ticks()
 
@@ -137,17 +138,37 @@ class Game():
             pygame.display.update()
 
     def display_pipe(self):
-        pipe_Offset_Lower = randint(50, 100)
-        pipe_Offset_Upper = randint(400, 500)
-        if 10 < self.score < 20:
-            pipe_Offset_Lower = randint(50, 100)
-            pipe_Offset_Upper = randint(200, 300)
+        # setting the center point of the pipes
+        center_Point = int(window_Height / 2)
+        up_Down = choice(('up', 'down'))
+
+        # setting the offset value from the center point
+        if 0 <= self.score < 10:
+            pipe_Offset = int(randint(225, 250) / 2)
+            if up_Down == 'up':
+                center_Point += int(randint(100, 150))
+            else:
+                center_Point -= int(randint(100, 150))
+
+        if 10 <= self.score <= 20:
+            pipe_Offset = int(randint(200, 225) / 2)
+            if up_Down == 'up':
+                center_Point += int(randint(100, 150))
+            else:
+                center_Point -= int(randint(100, 150))
 
         if self.score > 20:
-            pipe_Offset_Lower = randint(80, 100)
-            pipe_Offset_Upper = randint(200, 250)
-        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', pipe_Offset_Lower, pipe_Offset_Upper)
-        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', pipe_Offset_Lower, pipe_Offset_Upper)
+            pipe_Offset = int(randint(180, 200) / 2)
+
+            if up_Down == 'up':
+                center_Point += int(randint(150, 200))
+            else:
+                center_Point -= int(randint(150, 200))
+
+        pipe_Start = window_Width + (window_Width / 20)
+
+        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', self.score, center_Point, pipe_Start, pipe_Offset)
+        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', self.score, center_Point, pipe_Start, pipe_Offset)
 
     def player_collision(self):
         if pygame.sprite.spritecollide(self.player, self.collision_sprites, False, pygame.sprite.collide_mask) or self.player.rect.top <= 0 or self.player.rect.bottom >= window_Height:
@@ -194,23 +215,20 @@ class Game():
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                     self.player.player_jump()
 
-                if self.pipe_Frequency > 500:
-                    self.pipe_Frequency -= 50
+                if self.pipe_Frequency > 800:
+                    self.pipe_Frequency -= 25
 
                 pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
 
                 # prints a pipe on the screen everytime the timer is activated
                 if event.type == self.obstacle_Timer:
                     self.display_pipe()
-
             
             self.all_sprites.update(delta_Time)
             self.all_sprites.draw(self.screen_Size)
 
-            self.player.draw(self.screen_Size)
             self.player_collision()
             self.display_score()
-
 
             pygame.display.update()
             self.clock.tick(FPS)
