@@ -1,4 +1,5 @@
 import pygame, sys, time
+import json
 from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
@@ -73,9 +74,26 @@ class Game():
         # enabling user text input when game is over
         self.user_Text = ''
         self.user_Text_Label = 'Username: '
+        self.user_Submit = False
 
     def save_Score(self):
-        print('wrorking')
+        # read the contents of the scores.json file
+        with open('../database/scores.json', 'r') as readFile:
+            score_List = json.load(readFile)
+
+        # creating the instance of the user score
+        user_Score = {
+            "username": self.user_Text,
+            "score": self.score
+        }
+        
+        # adds the score to the score list
+        score_List.append(user_Score)
+        
+        # writes the new score that was added to the database
+        with open('../database/scores.json', 'w') as writeFile:
+            json.dump(score_List, writeFile)
+
 
     def home(self):
         while self.game_State == 'home':
@@ -113,7 +131,6 @@ class Game():
 
     def game_over(self):
         while self.game_State == 'game_over':
-
 
             # displaying the images and buttons and score achieved for the current game
             self.screen_Size.fill('Black')
@@ -157,14 +174,16 @@ class Game():
                     pygame.quit()
                     sys.exit()
 
+                # checks if the user enters a username to submit their score
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_BACKSPACE:
+                    if event.key == pygame.K_BACKSPACE and not self.user_Submit:
                         self.user_Text = self.user_Text[:-1]
                     elif len(self.user_Text) > 15:
                         self.user_Text = self.user_Text
-                    elif event.key == pygame.K_RETURN:
+                    elif event.key == pygame.K_RETURN and not self.user_Submit:
+                        self.user_Submit = True
                         self.save_Score()
-                    else:
+                    elif not self.user_Submit:
                         self.user_Text += event.unicode
 
 
@@ -214,6 +233,7 @@ class Game():
             # play game over sound effect
             self.game_Over_Sound.play()
             self.game_State = 'game_over'
+            self.user_Submit = False
             self.game_over()
 
     def display_score(self):
