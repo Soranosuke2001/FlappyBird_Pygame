@@ -39,7 +39,7 @@ class Game():
         width = game_Over_Img.get_width()
         height = game_Over_Img.get_height()
         self.game_Over_Img_Scaled = pygame.transform.scale(game_Over_Img, (int(width * 0.6), int(height * 0.6)))
-        self.game_Over_Img_Rect = self.game_Over_Img_Scaled.get_rect(midtop = (window_Width / 2, window_Height / 10))
+        self.game_Over_Img_Rect = self.game_Over_Img_Scaled.get_rect(midtop = (window_Width / 2, window_Height / 12))
 
         # creating the button instance for the game over page
         self.start_Button = GameOverButton(window_Width / 2, window_Height * 3/5, self.start_Btn, self.screen_Size, 0.9)
@@ -70,6 +70,13 @@ class Game():
         # import game over sound effect
         self.game_Over_Sound = pygame.mixer.Sound('../music/dead.wav')
 
+        # enabling user text input when game is over
+        self.user_Text = ''
+        self.user_Text_Label = 'Username: '
+
+    def save_Score(self):
+        print('wrorking')
+
     def home(self):
         while self.game_State == 'home':
 
@@ -88,6 +95,7 @@ class Game():
                 self.score_Offset = pygame.time.get_ticks()
                 self.play()
                 
+
             # program will terminate if the user pressed the exit button
             if self.exit_Button.draw():
                 pygame.quit()
@@ -110,9 +118,23 @@ class Game():
             # displaying the images and buttons and score achieved for the current game
             self.screen_Size.fill('Black')
             self.score_Text = self.text_Font.render(f' Your Score: {self.score}', False, 'White')   
-            self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 2/5))
+            self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 4/12))
             self.screen_Size.blit(self.game_Over_Img_Scaled, self.game_Over_Img_Rect)
             self.screen_Size.blit(self.score_Text, self.score_Text_Rect)
+
+            # setting up the user input box to submit a username
+            user_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+
+            # user input and the label
+            user_Text_Surface = user_Text_Font.render(self.user_Text, False, 'white')
+            user_Text_Label_Surface = user_Text_Font.render(self.user_Text_Label, False, 'white')
+
+            # setting the location to put the text box on the screen
+            user_Text_Rect = user_Text_Surface.get_rect(midleft = (window_Width * 2/5, window_Height * 5/12))
+            user_Text_Label_Rect = user_Text_Label_Surface.get_rect(midleft = (window_Width * 1/8, window_Height * 5/12))
+
+            self.screen_Size.blit(user_Text_Surface, user_Text_Rect)
+            self.screen_Size.blit(user_Text_Label_Surface, user_Text_Label_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
@@ -134,6 +156,17 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_BACKSPACE:
+                        self.user_Text = self.user_Text[:-1]
+                    elif len(self.user_Text) > 15:
+                        self.user_Text = self.user_Text
+                    elif event.key == pygame.K_RETURN:
+                        self.save_Score()
+                    else:
+                        self.user_Text += event.unicode
+
 
             pygame.display.update()
 
