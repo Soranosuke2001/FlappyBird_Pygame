@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <title>Flappy Bird Scores</title>
+</head>
+<body>
+    <h1>Flappy Bird Scores</h1>
+    <div class="leader-board-container">
+        <div class="table-header">
+            <div class="rank-header">
+                <p class="p-header">Rank</p>
+            </div>
+            <div class="username-header">
+                <p class="p-header">Username</p>
+            </div>
+            <div class="score-header">
+                <p class="p-header">Score</p>
+            </div>
+        </div>
+        {% block content %}
+            {% for users in sorted_Score_List %}
+            <div class="user-table">
+                <div class="user-rank">
+                    <p class="p-tag">{{ loop.index }}</p>
+                </div>
+                <div class="user-username">
+                    <p class="p-tag">{{ users["username"] }}</p>
+                </div>
+                <div class="user-score">
+                    <p class="p-tag">{{ users["score"] }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        {% endblock %}
+    </div>
+    <style>
+        h1 {
+            text-align: center;
+            font-size: 60px;
+            font-family: 'VT323', monospace;
+;
+        }
+
+        .p-header {
+            font-weight: bold;
+            font-family: 'VT323', monospace;
+        }
+
+        .leader-board-container {
+            padding: 0 12% 0 12%;
+            text-align: center;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .user-table {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border: 2px solid;
+            border-radius: 1rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 40px;
+            font-family: 'VT323', monospace;
+        }
+
+        .p-tag {
+            padding: 1rem 0 1rem 0;
+        }
+    </style>
+</body>
+</html>
