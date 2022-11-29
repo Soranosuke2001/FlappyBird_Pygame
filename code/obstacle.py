@@ -7,9 +7,6 @@ class Obstacle(pygame.sprite.Sprite):
         super().__init__(groups)
         self.sprite_Type = 'pipe'
 
-        print(center_Point)
-        print(f'score: {score} offest: {pipe_Offset}')
-
         pipe_Img = pygame.image.load('../images/background/game/pipe.png').convert_alpha()
         self.image = pygame.transform.scale(pipe_Img, pygame.math.Vector2(pipe_Img.get_size()) * scaling)
         self.rect = self.image.get_rect()

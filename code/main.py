@@ -1,5 +1,6 @@
 import pygame, sys, time
 import json
+import requests
 from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
@@ -77,22 +78,33 @@ class Game():
         self.user_Submit = False
 
     def save_Score(self):
-        # read the contents of the scores.json file
-        with open('../database/scores.json', 'r') as readFile:
-            score_List = json.load(readFile)
 
-        # creating the instance of the user score
-        user_Score = {
-            "username": self.user_Text,
-            "score": self.score
-        }
+        try:
+            url = 'http://127.0.0.1:5000/submitscore'
+            dict = {
+                "username": "sora",
+                "score": 10
+            }
+            requests.post(url, json = dict)
+        except:
+            print('didnt work')
+
+        # # read the contents of the scores.json file
+        # with open('../database/scores.json', 'r') as readFile:
+        #     score_List = json.load(readFile)
+
+        # # creating the instance of the user score
+        # user_Score = {
+        #     "username": self.user_Text,
+        #     "score": self.score
+        # }
         
-        # adds the score to the score list
-        score_List.append(user_Score)
+        # # adds the score to the score list
+        # score_List.append(user_Score)
         
-        # writes the new score that was added to the database
-        with open('../database/scores.json', 'w') as writeFile:
-            json.dump(score_List, writeFile)
+        # # writes the new score that was added to the database
+        # with open('../database/scores.json', 'w') as writeFile:
+        #     json.dump(score_List, writeFile)
 
 
     def home(self):
@@ -139,22 +151,42 @@ class Game():
             self.screen_Size.blit(self.game_Over_Img_Scaled, self.game_Over_Img_Rect)
             self.screen_Size.blit(self.score_Text, self.score_Text_Rect)
 
-            # setting up the user input box to submit a username
-            user_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+            # checks if the usr submitted a score or not
+            if self.user_Submit == False:
+                # setting up the user input box to submit a username
+                user_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+                input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 35)
 
-            # user input and the label
-            user_Text_Surface = user_Text_Font.render(self.user_Text, False, 'white')
-            user_Text_Label_Surface = user_Text_Font.render(self.user_Text_Label, False, 'white')
+                # user input instructions
+                input_Notes = 'Type your username and press "Enter"'
+                input_Notes_Surface = input_Notes_Font.render(input_Notes, False, 'white')
+                input_Notes_Rect = input_Notes_Surface.get_rect(midtop = (window_Width / 2, window_Height * 5/12))
 
-            # setting the location to put the text box on the screen
-            user_Text_Rect = user_Text_Surface.get_rect(midleft = (window_Width * 2/5, window_Height * 5/12))
-            user_Text_Label_Rect = user_Text_Label_Surface.get_rect(midleft = (window_Width * 1/8, window_Height * 5/12))
+                # user input and the label
+                user_Text_Surface = user_Text_Font.render(self.user_Text, False, 'white')
+                user_Text_Label_Surface = user_Text_Font.render(self.user_Text_Label, False, 'white')
 
-            self.screen_Size.blit(user_Text_Surface, user_Text_Rect)
-            self.screen_Size.blit(user_Text_Label_Surface, user_Text_Label_Rect)
+                # setting the location to put the text box on the screen
+                user_Text_Rect = user_Text_Surface.get_rect(midleft = (window_Width * 2/5, window_Height * 6/12))
+                user_Text_Label_Rect = user_Text_Label_Surface.get_rect(midleft = (window_Width * 1/8, window_Height * 6/12))
+
+                self.screen_Size.blit(user_Text_Surface, user_Text_Rect)
+                self.screen_Size.blit(user_Text_Label_Surface, user_Text_Label_Rect)
+                self.screen_Size.blit(input_Notes_Surface, input_Notes_Rect)
+            
+            # displays the "submitted" text if the user has submitted
+            else:
+                
+                # lets the user know that the score was submitted
+                input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+                submit_Text = input_Notes_Font.render('Score submitted', False, 'white')
+                submit_Text_Rect = submit_Text.get_rect(midtop = (window_Width / 2, window_Height * 6/12))
+
+                self.screen_Size.blit(submit_Text, submit_Text_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
+                self.user_Submit = False
                 self.score = 0
                 self.game_State = 'play'
                 self.score_Offset = pygame.time.get_ticks()
