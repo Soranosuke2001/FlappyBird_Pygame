@@ -1,6 +1,4 @@
-import pygame, sys, time
-import json
-import requests
+import pygame, sys, time, requests, json, datetime
 from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
@@ -19,7 +17,7 @@ class Game():
         self.clock = pygame.time.Clock()
 
         # setting the game state
-        self.game_State = 'home'
+        self.game_State = 'login'
         self.play_Game = False
 
         # setting sprite groups
@@ -77,35 +75,40 @@ class Game():
         self.user_Text_Label = 'Username: '
         self.user_Submit = False
 
-    def save_Score(self):
+        # loginPage user inputs
+        self.input_Box = 'username'
+        self.valid = False
+
+        self.username_Label = 'Username:'
+        self.username = ''
+
+        self.password_Label = 'Password:'
+        self.password = ''
+                    
+    def submit_Score(self):
 
         try:
             url = 'http://127.0.0.1:5000/submitscore'
+
+            dateInfo = datetime.datetime.now()
+            # year = dateInfo.year
+            # month = dateInfo.month
+            # day = dateInfo.day
+            # hour = dateInfo.hour
+            # minute = dateInfo.minute
+            date = "{dateInfo.month}-{dateInfo.date}-{dateInfo.year} {dateInfo.hour}:{dateInfo.minute}"
+
             dict = {
-                "username": "sora",
-                "score": 10
+                "username": self.user_Text,
+                "score": self.score,
+                "date": date
             }
+
             requests.post(url, json = dict)
+
+            self.user_Text = ''
         except:
             print('didnt work')
-
-        # # read the contents of the scores.json file
-        # with open('../database/scores.json', 'r') as readFile:
-        #     score_List = json.load(readFile)
-
-        # # creating the instance of the user score
-        # user_Score = {
-        #     "username": self.user_Text,
-        #     "score": self.score
-        # }
-        
-        # # adds the score to the score list
-        # score_List.append(user_Score)
-        
-        # # writes the new score that was added to the database
-        # with open('../database/scores.json', 'w') as writeFile:
-        #     json.dump(score_List, writeFile)
-
 
     def home(self):
         while self.game_State == 'home':
@@ -214,7 +217,7 @@ class Game():
                         self.user_Text = self.user_Text
                     elif event.key == pygame.K_RETURN and not self.user_Submit:
                         self.user_Submit = True
-                        self.save_Score()
+                        self.submit_Score()
                     elif not self.user_Submit:
                         self.user_Text += event.unicode
 
@@ -318,25 +321,87 @@ class Game():
             pygame.display.update()
             self.clock.tick(FPS)
 
-    # def run(self):
-        while True:
-            if self.game_State == 'home':
-                self.game_State = self.home()
+    def checkUser(self, username, password):
+        with open('../database/users.json', 'r') as readFile:
+            user_List = json.load(readFile)
 
-            if self.game_State == 'play':
-                self.play()
+            for user in user_List:
+                if user["username"] == username and user["password"] == password:
+                    self.valid = True
+        
+        if self.valid == False:
+            with open('../database/users.json', 'w') as writeFile:
 
-            if self.game_State == 'game_over':
-                self.game_over()
+                new_User = {
+                    "username": username, 
+                    "password": password
+                }
 
-            # checks the events while game is running
+                user_List.append(new_User)
+
+                json.dump(user_List, writeFile)
+
+    def loginPage(self):
+        while self.game_State == 'login':
+
+            # setting the x position
+            x = window_Width * 1/6
+
+            # setting the background
+            self.screen_Size.blit(self.home_Bg, self.home_Bg_Rect)
+
+            # # setting the font for the text input
+            input_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+
+            # # setting the username and password input box
+            username_Label_Surface = input_Text_Font.render(self.username_Label, False, 'white')
+            username_Input = input_Text_Font.render(self.username, False, 'white')
+
+            password_Label_Surface = input_Text_Font.render(self.password_Label, False, 'white')
+            password_Input = input_Text_Font.render(self.password, False, 'white')
+
+            # # setting the location of the text input box
+            username_Label_Rect = username_Label_Surface.get_rect(topleft = (x, window_Height * 1/6))
+            username_Input_Rect = username_Input.get_rect(topleft = (x, window_Height * 2/6))
+
+            password_Label_Rect = password_Label_Surface.get_rect(topleft = (x, window_Height * 3/6))
+            password_Input_Rect = password_Input.get_rect(topleft = (x, window_Height * 4/6))
+
+            # # displaying the text on the screen
+            self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
+            self.screen_Size.blit(username_Input, username_Input_Rect)
+
+            self.screen_Size.blit(password_Label_Surface, password_Label_Rect)
+            self.screen_Size.blit(password_Input, password_Input_Rect)
+
             for event in pygame.event.get():
 
-                # closes the window
+                # exits the game gracefully
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-            
+
+                # check if the state is in either username or password input
+                if self.input_Box == 'username' and event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        self.input_Box = 'password'
+                    elif event.key == pygame.K_BACKSPACE:
+                        self.username = self.username[:-1]
+                    else:
+                        self.username += event.unicode
+    
+                elif self.input_Box == 'password' and event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        self.checkUser(self.username, self.password)
+                        self.game_State = 'home'
+                        self.home()
+                    elif event.key == pygame.K_BACKSPACE:
+                        self.password = self.password[:-1]
+                    else:
+                        self.password += event.unicode
+
+            pygame.display.update()
+
 if __name__ == '__main__':
     game = Game()
-    game.home()
+    game.loginPage()
