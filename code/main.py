@@ -10,6 +10,15 @@ from random import randint, choice
 
 class Game():
     def __init__(self):
+        """
+        Constructor
+
+        Sets up the entire game 
+
+        Args: None
+
+        Returns: None
+        """
         pygame.init()
         mixer.init()
         self.screen_Size = pygame.display.set_mode((window_Width, window_Height))
@@ -21,6 +30,7 @@ class Game():
         self.play_Game = False
 
         # setting sprite groups
+        self.background_sprite = pygame.sprite.Group()
         self.all_sprites = pygame.sprite.Group()
         self.collision_sprites = pygame.sprite.Group()
 
@@ -55,7 +65,7 @@ class Game():
         self.scaling = window_Height / bkg_Height
 
         # sprite setup
-        Background(self.all_sprites, self.scaling)
+        self.background = Background(self.background_sprite, self.scaling)
         self.player = Player(self.all_sprites, self.scaling / 25)
 
         # setting up the obstacle timer
@@ -84,6 +94,17 @@ class Game():
         self.password = ''
                     
     def submit_Score(self):
+        """
+        Method to submit the score
+
+        Description:
+        Sends a post request to the website and passes a dictionary for the API to read and save
+
+        Args: None
+
+        Returns: 
+            prints to the console if the post request was not successful
+        """
 
         try:
             # url to the website
@@ -107,6 +128,20 @@ class Game():
             print('didnt work')
 
     def home(self):
+        """
+        Method to display the home page
+
+        Description:
+        Displays the home page after the login screen
+
+        Interaction:
+        Start button: starts the game
+        Exit button: exits the game
+
+        Args: None
+
+        Returns: None
+        """
         while self.game_State == 'home':
 
             # setting the background
@@ -141,7 +176,20 @@ class Game():
             pygame.display.update()
 
     def game_over(self):
+        """
+        Method to display the game over screen
 
+        Description:
+        Displays the game over screen with the score achieved and the option to submit the score to the website
+
+        Interaction:
+        Start button: starts the game
+        Exit button: exits the game
+
+        Args: None
+
+        Returns: None
+        """
         while self.game_State == 'game_over':
 
             # displaying the images and buttons and score achieved for the current game
@@ -176,6 +224,7 @@ class Game():
             if self.start_Button.draw():
                 self.score = 0
                 self.game_State = 'play'
+                self.play_Game = False
                 self.score_Offset = pygame.time.get_ticks()
 
                 self.player = Player(self.all_sprites, self.scaling / 25)
@@ -188,10 +237,10 @@ class Game():
             # checks the events while game is running
             for event in pygame.event.get():
 
+                # submits the user score achieved to the website
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
                     self.user_Submit = True
                     self.submit_Score()
-
 
                 # closes the window
                 if event.type == pygame.QUIT:
@@ -201,6 +250,16 @@ class Game():
             pygame.display.update()
 
     def display_pipe(self):
+        """
+        Method to display the pipe
+
+        Description:
+        Calculates the pipe offset depending on the score the user achieved which is time dependant 
+
+        Args: None
+
+        Returns: None
+        """
         # setting the center point of the pipes
         center_Point = int(window_Height / 2)
         up_Down = choice(('up', 'down'))
@@ -234,11 +293,25 @@ class Game():
         self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', self.score, center_Point, pipe_Start, pipe_Offset)
 
     def player_collision(self):
+        """
+        Method to check the player collision
+
+        Description:
+        Checks if the player collided with the pipe or the top or the bottom of the screen
+
+        Args: None
+
+        Returns: None
+        """
+        # checks if the player has collided
         if pygame.sprite.spritecollide(self.player, self.collision_sprites, False, pygame.sprite.collide_mask) or self.player.rect.top <= 0 or self.player.rect.bottom >= window_Height:
+            
+            # deletes the player
             self.player.kill()
             self.game_State = 'game_over'
 
             for sprite in self.collision_sprites.sprites():
+                # deleted all collision sprites
                 sprite.kill()
 
             # play game over sound effect
@@ -248,6 +321,16 @@ class Game():
             self.game_over()
 
     def display_score(self):
+        """
+        Method to display the score
+
+        Description:
+        Displays the score depending on the score the user achieved which is time dependant
+
+        Args: None
+
+        Returns: None
+        """
         if self.game_State == 'play':
             # using the time the game has been running as the score
             self.score = (pygame.time.get_ticks() - self.score_Offset) // 1000
@@ -259,6 +342,16 @@ class Game():
         self.screen_Size.blit(score_Text, score_Rect)
 
     def play(self):
+        """
+        Method to play the game
+
+        Description:
+        Plays the game and calls required classes to update its positions on the screen
+
+        Args: None
+
+        Returns: None
+        """
         last_time = time.time()
 
         while self.game_State == 'play':
@@ -267,44 +360,67 @@ class Game():
             delta_Time = time.time() - last_time
             last_time = time.time()
 
+            self.background_sprite.update(delta_Time)
+            self.background_sprite.draw(self.screen_Size)
+            self.player.draw(self.screen_Size)
+
             # checks the events while game is running
             for event in pygame.event.get():
+
+                if self.play_Game == False:
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        self.play_Game = True
+                        self.score = 0
+
+
+                if self.play_Game == True:
+                    # checks if the user pressed the space key to jump
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        self.player.player_jump()
+
+                    # spawns the pipes
+                    if event.type == self.obstacle_Timer:
+                        self.display_pipe()
+
+                        # increases the pipe spawn frequency
+                        if self.pipe_Frequency > 800:
+                            self.pipe_Frequency -= 25
 
                 # closes the window
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
 
-                # checks if the user pressed the space key to jump
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    self.player.player_jump()
-
-                if self.pipe_Frequency > 800:
-                    self.pipe_Frequency -= 25
-
-                pygame.time.set_timer(self.obstacle_Timer, self.pipe_Frequency)
-
-                # prints a pipe on the screen everytime the timer is activated
-                if event.type == self.obstacle_Timer:
-                    self.display_pipe()
+            if self.play_Game == True:
+                self.all_sprites.draw(self.screen_Size)
+                self.player_collision()
+                self.all_sprites.update(delta_Time)
+                self.display_score()
             
-            self.all_sprites.update(delta_Time)
-            self.all_sprites.draw(self.screen_Size)
-
-            self.player_collision()
-            self.display_score()
-
             pygame.display.update()
             self.clock.tick(FPS)
 
     def checkUser(self, username, password):
+        """
+        Method to check if the user is valid
+
+        Description:
+        Checks if the username and password is in the database and if not, it adds it to the database
+
+        Args:
+            username (str): Username of the user
+            password (str): Password of the user
+        """
+        # reads the database file
         with open('../database/users.json', 'r') as readFile:
             user_List = json.load(readFile)
 
+            # checks if there is a matching username and password in the database
             for user in user_List:
                 if user["username"] == username and user["password"] == password:
                     self.valid = True
         
+        # writing to the database if the username and password doesnt match
         if self.valid == False:
             with open('../database/users.json', 'w') as writeFile:
 
@@ -318,6 +434,16 @@ class Game():
                 json.dump(user_List, writeFile)
 
     def loginPage(self):
+        """
+        Method to login or sign the user up
+
+        Description:
+        This method will display the login page and takes in the username and password inputted by the user
+
+        Args: None
+
+        Returns: None
+        """
         while self.game_State == 'login':
 
             # setting the x position
@@ -359,18 +485,26 @@ class Game():
 
                 # check if the state is in either username or password input
                 if self.input_Box == 'username' and event.type == pygame.KEYDOWN:
+
+                    # if the enter key is pressed then change the input box to the password
                     if event.key == pygame.K_RETURN:
                         self.input_Box = 'password'
+
+                    # deletes the last character from the string
                     elif event.key == pygame.K_BACKSPACE:
                         self.username = self.username[:-1]
                     else:
                         self.username += event.unicode
     
                 elif self.input_Box == 'password' and event.type == pygame.KEYDOWN:
+
+                    # if the return key is pressed then navigate to the home page
                     if event.key == pygame.K_RETURN:
                         self.checkUser(self.username, self.password)
                         self.game_State = 'home'
                         self.home()
+                    
+                    # deletes a last character from the string
                     elif event.key == pygame.K_BACKSPACE:
                         self.password = self.password[:-1]
                     else:

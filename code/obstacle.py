@@ -1,5 +1,4 @@
 import pygame
-from random import choice, randint
 from gamesettings import *
 
 class Obstacle(pygame.sprite.Sprite):
