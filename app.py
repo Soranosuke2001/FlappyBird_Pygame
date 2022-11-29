@@ -12,6 +12,7 @@ def home():
 
         sorted_List = []
 
+        # sorting functionalty to sort from greatest to least in score
         for user in users:
             for score in score_List[user]:
                 user_Score = {
@@ -28,15 +29,15 @@ def home():
 @app.route('/submitscore', methods=['POST'])
 def submit():
     data = request.json
-    # print(data)
 
     # read the contents of the scores.json file
     with open('./database/scores.json', 'r') as readFile:
         score_List = json.load(readFile)
 
+    # gets the list of users in the scores.json file
     user_List = score_List.keys()
 
-
+    # if the username already exists, add the score to the list of scores in the database
     if data["username"] in user_List:
 
         score_Info = {
@@ -44,7 +45,7 @@ def submit():
             "date": data["date"]
         }
 
-        score_List["username"].append(score_Info)
+        score_List[data["username"]].append(score_Info)
     
     else:
         # creating the instance of the user score
@@ -60,6 +61,10 @@ def submit():
         json.dump(score_List, writeFile)        
 
     return redirect('/')
+
+@app.route('/login')
+def login():
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

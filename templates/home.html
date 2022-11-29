@@ -10,6 +10,11 @@
     <title>Flappy Bird Scores</title>
 </head>
 <body>
+   <div class="navbar">
+       <form action="/login">
+           <button class="login-btn" name="login" value="login">Login</button>
+        </form>
+    </div>
     <h1>Flappy Bird Scores</h1>
     <div class="leader-board-container">
         <div class="table-header">
@@ -46,6 +51,37 @@
         {% endblock %}
     </div>
     <style>
+        .login-btn {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background-color: #FCFCFD;
+            border-radius: 10px;
+            border-width: 0;
+            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+            color: #36395A;
+            cursor: pointer;
+            padding: 10px;
+            font-family: "JetBrains Mono",monospace;
+            transition: box-shadow .15s,transform .15s;
+            will-change: box-shadow,transform;
+            font-size: 25px;
+        }
+
+        .login-btn:focus {
+            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        }
+
+        .login-btn:hover {
+            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            transform: translateY(-2px);
+        }
+
+        .login-btn:active {
+            box-shadow: #D6D6E7 0 3px 7px inset;
+            transform: translateY(2px);
+        }
+
         h1 {
             text-align: center;
             font-size: 60px;
