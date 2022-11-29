@@ -22,18 +22,24 @@
             <div class="score-header">
                 <p class="p-header">Score</p>
             </div>
+            <div class="date-header">
+                <p class="p-header">Date</p>
+            </div>
         </div>
         {% block content %}
-            {% for users in sorted_Score_List %}
+            {% for score in sorted_List %}
             <div class="user-table">
                 <div class="user-rank">
                     <p class="p-tag">{{ loop.index }}</p>
                 </div>
                 <div class="user-username">
-                    <p class="p-tag">{{ users["username"] }}</p>
+                    <p class="p-tag">{{ score["username"] }}</p>
                 </div>
                 <div class="user-score">
-                    <p class="p-tag">{{ users["score"] }}</p>
+                    <p class="p-tag">{{ score["score"] }}</p>
+                </div>
+                <div class="date">
+                    <p class="p-tag">{{ score["date"] }}</p>
                 </div>
             </div>
             {% endfor %}
@@ -61,12 +67,12 @@
 
         .table-header {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
         }
 
         .user-table {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             border: 2px solid;
             border-radius: 1rem;
         }

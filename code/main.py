@@ -1,4 +1,4 @@
-import pygame, sys, time, requests, json, datetime
+import pygame, sys, time, requests, json, datetime 
 from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
@@ -88,25 +88,23 @@ class Game():
     def submit_Score(self):
 
         try:
+            # url to the website
             url = 'http://127.0.0.1:5000/submitscore'
 
+            # getting the current date and time info
             dateInfo = datetime.datetime.now()
-            # year = dateInfo.year
-            # month = dateInfo.month
-            # day = dateInfo.day
-            # hour = dateInfo.hour
-            # minute = dateInfo.minute
-            date = "{dateInfo.month}-{dateInfo.date}-{dateInfo.year} {dateInfo.hour}:{dateInfo.minute}"
+            date = f"{dateInfo.month}-{dateInfo.day}-{dateInfo.year} {dateInfo.hour}:{dateInfo.minute}"
 
+            # creating the json object ot send as a POST request
             dict = {
-                "username": self.user_Text,
+                "username": self.username,
                 "score": self.score,
                 "date": date
             }
 
+            # send the post request to the website
             requests.post(url, json = dict)
 
-            self.user_Text = ''
         except:
             print('didnt work')
 
@@ -145,6 +143,9 @@ class Game():
             pygame.display.update()
 
     def game_over(self):
+
+        self.submit_Score()
+
         while self.game_State == 'game_over':
 
             # displaying the images and buttons and score achieved for the current game
@@ -189,7 +190,6 @@ class Game():
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
-                self.user_Submit = False
                 self.score = 0
                 self.game_State = 'play'
                 self.score_Offset = pygame.time.get_ticks()
@@ -208,19 +208,6 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
-                # checks if the user enters a username to submit their score
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_BACKSPACE and not self.user_Submit:
-                        self.user_Text = self.user_Text[:-1]
-                    elif len(self.user_Text) > 15:
-                        self.user_Text = self.user_Text
-                    elif event.key == pygame.K_RETURN and not self.user_Submit:
-                        self.user_Submit = True
-                        self.submit_Score()
-                    elif not self.user_Submit:
-                        self.user_Text += event.unicode
-
 
             pygame.display.update()
 
