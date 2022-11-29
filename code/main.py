@@ -71,8 +71,6 @@ class Game():
         self.game_Over_Sound = pygame.mixer.Sound('../music/dead.wav')
 
         # enabling user text input when game is over
-        self.user_Text = ''
-        self.user_Text_Label = 'Username: '
         self.user_Submit = False
 
         # loginPage user inputs
@@ -144,8 +142,6 @@ class Game():
 
     def game_over(self):
 
-        self.submit_Score()
-
         while self.game_State == 'game_over':
 
             # displaying the images and buttons and score achieved for the current game
@@ -158,24 +154,12 @@ class Game():
             # checks if the usr submitted a score or not
             if self.user_Submit == False:
                 # setting up the user input box to submit a username
-                user_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
                 input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 35)
 
                 # user input instructions
-                input_Notes = 'Type your username and press "Enter"'
-                input_Notes_Surface = input_Notes_Font.render(input_Notes, False, 'white')
+                input_Notes_Surface = input_Notes_Font.render('Press "Enter" to submit score', False, 'white')
                 input_Notes_Rect = input_Notes_Surface.get_rect(midtop = (window_Width / 2, window_Height * 5/12))
 
-                # user input and the label
-                user_Text_Surface = user_Text_Font.render(self.user_Text, False, 'white')
-                user_Text_Label_Surface = user_Text_Font.render(self.user_Text_Label, False, 'white')
-
-                # setting the location to put the text box on the screen
-                user_Text_Rect = user_Text_Surface.get_rect(midleft = (window_Width * 2/5, window_Height * 6/12))
-                user_Text_Label_Rect = user_Text_Label_Surface.get_rect(midleft = (window_Width * 1/8, window_Height * 6/12))
-
-                self.screen_Size.blit(user_Text_Surface, user_Text_Rect)
-                self.screen_Size.blit(user_Text_Label_Surface, user_Text_Label_Rect)
                 self.screen_Size.blit(input_Notes_Surface, input_Notes_Rect)
             
             # displays the "submitted" text if the user has submitted
@@ -203,6 +187,11 @@ class Game():
 
             # checks the events while game is running
             for event in pygame.event.get():
+
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                    self.user_Submit = True
+                    self.submit_Score()
+
 
                 # closes the window
                 if event.type == pygame.QUIT:
@@ -348,11 +337,11 @@ class Game():
             password_Input = input_Text_Font.render(self.password, False, 'white')
 
             # # setting the location of the text input box
-            username_Label_Rect = username_Label_Surface.get_rect(topleft = (x, window_Height * 1/6))
-            username_Input_Rect = username_Input.get_rect(topleft = (x, window_Height * 2/6))
+            username_Label_Rect = username_Label_Surface.get_rect(topleft = (x, window_Height * 4/16))
+            username_Input_Rect = username_Input.get_rect(topleft = (x, window_Height * 5/16))
 
-            password_Label_Rect = password_Label_Surface.get_rect(topleft = (x, window_Height * 3/6))
-            password_Input_Rect = password_Input.get_rect(topleft = (x, window_Height * 4/6))
+            password_Label_Rect = password_Label_Surface.get_rect(topleft = (x, window_Height * 8/16))
+            password_Input_Rect = password_Input.get_rect(topleft = (x, window_Height * 9/16))
 
             # # displaying the text on the screen
             self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
