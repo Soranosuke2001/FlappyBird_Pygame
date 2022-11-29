@@ -39,7 +39,10 @@ def submit():
     # if the username already exists, add the score to the list of scores in the database
     if data["username"] in user_List:
 
+        id = len(user_List[data["username"]]) + 1
+
         score_Info = {
+            "id": id,
             "score": data["score"],
             "date": data["date"]
         }
@@ -60,9 +63,9 @@ def submit():
 
     return redirect('/')
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
+# @app.route('/login')
+# def login():
+#     return render_template('login.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def authenticate():
@@ -73,11 +76,16 @@ def authenticate():
         users_List = updateDB('./database/users.json', 'r')
 
         for user in users_List:
+
+            # directs the user to the personal page to view the scores or delete them
             if user["username"] == username and user["password"] == password:
                 score_List = updateDB('./database/scores.json', 'r')
-                return render_template('login.html')
+                user_Scores = score_List[username]
+                print(user_Scores)
+                return render_template('profile.html', user_Scores=user_Scores, username=username)
 
             else:
+                # redirects the user back to the login page if the username or password is invalid
                 error = 'Invalid Username or Password'
                 return render_template('login.html', error=error)
     
@@ -86,14 +94,20 @@ def authenticate():
     if request.method == 'GET':
         return render_template('login.html')
 
+@app.route('/delete/score', methods=['POST'])
+def deleteScore():
+    return render_template('profile.html')
 
 # method to read or write the json file from the database
 def updateDB(database, method, updateJSON=None):
+
+    # reads the database if the method is read
     if method == 'r':
         with open(database, 'r') as readFile:
             score_List = json.load(readFile)
             return score_List
 
+    # writes to the database if the method is write
     elif method == 'w':
         with open(database, 'w') as writeFile:
             json.dump(updateJSON, writeFile)

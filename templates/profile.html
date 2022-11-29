@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+    <title>Profile</title>
+</head>
+<body>
+   <div class="navbar">
+       <form action="/login">
+           <button class="login-btn">Logout</button>
+        </form>
+    </div>
+    <h1>{{ username }}'s Scores</h1>
+    <div class="leader-board-container">
+        <div class="table-header">
+            <div class="rank-header">
+                <p class="p-header">Rank</p>
+            </div>
+            <div class="score-header">
+                <p class="p-header">Score</p>
+            </div>
+            <div class="date-header">
+                <p class="p-header">Date</p>
+            </div>
+            <div class="delete-header">
+                <p class="p-header">Delete</p>
+            </div>
+        </div>
+        {% block content %}
+            {% for score in user_Scores %}
+            <div class="user-table">
+                <div class="user-rank">
+                    <p class="p-tag">{{ loop.index }}</p>
+                </div>
+                <div class="user-score">
+                    <p class="p-tag">{{ score["score"] }}</p>
+                </div>
+                <div class="date">
+                    <p class="p-tag">{{ score["date"] }}</p>
+                </div>
+                <div class="delete-btn">
+                    <form class="delete-form" action="/delete/score" method="POST">
+                        <button class="btn-delete" type="submit"></button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% endblock %}
+    </div>
+    <style>
+        .login-btn {
+            position: fixed;
+            right: 20px;
+            top: 20px;
+            background-color: #FCFCFD;
+            border-radius: 10px;
+            border-width: 0;
+            box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+            color: #36395A;
+            cursor: pointer;
+            padding: 10px;
+            font-family: "JetBrains Mono",monospace;
+            transition: box-shadow .15s,transform .15s;
+            will-change: box-shadow,transform;
+            font-size: 25px;
+        }
+
+        .login-btn:focus {
+            box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+        }
+
+        .login-btn:hover {
+            box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+            transform: translateY(-2px);
+        }
+
+        .login-btn:active {
+            box-shadow: #D6D6E7 0 3px 7px inset;
+            transform: translateY(2px);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 60px;
+            font-family: 'VT323', monospace;
+;
+        }
+
+        .p-header {
+            font-weight: bold;
+            font-family: 'VT323', monospace;
+        }
+
+        .leader-board-container {
+            padding: 0 12% 0 12%;
+            text-align: center;
+            display: grid;
+            gap: 0.7rem;
+        }
+
+        .table-header {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .user-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border: 2px solid;
+            border-radius: 1rem;
+        }
+
+        p {
+            margin: 0;
+            font-size: 40px;
+            font-family: 'VT323', monospace;
+        }
+
+        .p-tag {
+            padding: 1rem 0 1rem 0;
+        }
+
+        .delete-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-delete {
+            background-image: url('static/bin.png');
+            background-position: center;
+            width: 50px;
+            height: 50px;
+            background-size: cover;
+            border: none;
+            /* border-radius: 1rem; */
+        }
+    </style>
+</body>
+</html>
