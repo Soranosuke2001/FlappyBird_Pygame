@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, session, url_for
 import json
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def home():
     return render_template('home.html', sorted_List=sorted_List)
 
 @app.route('/submitscore', methods=['POST'])
-def submit():
+def submitscore():
     data = request.json
 
     # read the contents of the scores.json file
@@ -39,7 +39,9 @@ def submit():
     # if the username already exists, add the score to the list of scores in the database
     if data["username"] in user_List:
 
-        id = len(user_List[data["username"]]) + 1
+        print(score_List[data["username"]][-1])
+
+        id = score_List[data["username"]][-1]["id"] + 1
 
         score_Info = {
             "id": id,
@@ -63,10 +65,6 @@ def submit():
 
     return redirect('/')
 
-# @app.route('/login')
-# def login():
-#     return render_template('login.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def authenticate():
     if request.method == 'POST':
@@ -79,24 +77,44 @@ def authenticate():
 
             # directs the user to the personal page to view the scores or delete them
             if user["username"] == username and user["password"] == password:
-                score_List = updateDB('./database/scores.json', 'r')
-                user_Scores = score_List[username]
-                print(user_Scores)
-                return render_template('profile.html', user_Scores=user_Scores, username=username)
-
-            else:
-                # redirects the user back to the login page if the username or password is invalid
-                error = 'Invalid Username or Password'
-                return render_template('login.html', error=error)
+                session['username'] = username
+                return redirect(url_for('profile'))
     
-        return render_template('login.html')
+        # redirects the user back to the login page if the username or password is invalid
+        error = 'Invalid Username or Password'
+        return render_template('login.html', error=error)
 
     if request.method == 'GET':
         return render_template('login.html')
 
+@app.route('/logout')
+def logout():
+    return redirect(url_for('home'))
+
+@app.route('/profile')
+def profile():
+    username = session.get('username', None)
+    score_List = updateDB('./database/scores.json', 'r')
+    user_Scores = score_List[username]
+    return render_template('profile.html', user_Scores=user_Scores, username=username)
+
 @app.route('/delete/score', methods=['POST'])
 def deleteScore():
-    return render_template('profile.html')
+    # print(request.form)
+    id = int(request.form.to_dict()["delete"])
+    username = request.form["username"]
+
+    score_List = updateDB('./database/scores.json', 'r')
+
+    # user_Scores = score_List[username]
+
+    for score in score_List[username]:
+        print(score)
+        if score["id"] == id:
+            score_List[username].remove(score)
+
+    updateDB('./database/scores.json', 'w', score_List)
+    return redirect(url_for('profile'))
 
 # method to read or write the json file from the database
 def updateDB(database, method, updateJSON=None):
