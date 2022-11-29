@@ -289,8 +289,8 @@ class Game():
 
         pipe_Start = window_Width + (window_Width / 20)
 
-        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', self.score, center_Point, pipe_Start, pipe_Offset)
-        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', self.score, center_Point, pipe_Start, pipe_Offset)
+        self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', center_Point, pipe_Start, pipe_Offset)
+        self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', center_Point, pipe_Start, pipe_Offset)
 
     def player_collision(self):
         """
