@@ -1,23 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- The entire code was taken from a tutorial -->
+    <!-- The entire code was taken from a tutorial  -->
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login Page</title>
   </head>
   <body>
+    {% if error %}
+    <div class="error">
+        <p><strong>Error</strong>: {{error}}</p>  
+    </div>  
+    {% endif %}  
     <div class="login_card">
       <h1>Welcome</h1>
-      <form method="post">
+      <form action="/login" method="POST">
         <div class="input_field">
-          <input type="text" required />
+          <input type="text" name="username" value="" required />
           <span></span>
           <label>Username</label>
         </div>
         <div class="input_field">
-          <input type="password" required />
+          <input type="password" name="password" value="" required />
           <span></span>
           <label>Password</label>
         </div>
@@ -159,6 +164,15 @@
     }
     .signup_link a:hover {
     text-decoration: underline;
+    }
+
+    .error {
+        position: fixed;
+        top: 73%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        color: white;
     }
   </style>
 </html>
