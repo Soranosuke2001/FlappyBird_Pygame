@@ -10,9 +10,14 @@
     <title>Profile</title>
 </head>
 <body>
+    <div class="home">
+        <form action="/" method="GET">
+            <button class="btn btn-home">Home</button>
+        </form>
+    </div>
     <div class="navbar">
        <form action="/logout">
-           <button class="login-btn">Logout</button>
+           <button class="btn btn-logout">Logout</button>
         </form>
     </div>
     <h1>{{ username }}'s Scores</h1>
@@ -45,13 +50,8 @@
                 </div>
                 <div class="delete-btn">
                     <form class="delete-form" action="/delete/score" method="POST">
-                        <!-- <div> -->
                         <input type="text" name="username" value="{{ username }}" hidden>
                         <button id="btn-delete" class="btn-delete" type="submit" name="delete" value="{{ score['id'] }}">❌</button>
-                            <!-- <label for="btn-delete" class="btn-label">❌</label> -->
-                            
-                            <!-- <span style="display: none;">{{ score["id"] }}</span> -->
-                        <!-- </div> -->
                     </form>
                 </div>
             </div>
@@ -59,10 +59,26 @@
         {% endblock %}
     </div>
     <style>
-        .login-btn {
+        .btn {
+            all: unset;
+            font-family: 'VT323', monospace;
+            font-size: 450%;
+            text-align: center;
+        }
+
+        .btn-logout {
             position: fixed;
             right: 20px;
             top: 20px;
+        }
+
+        .btn-home {
+            position: fixed;
+            left: 20px;
+            top: 20px;
+        }
+
+        .btn {
             background-color: #FCFCFD;
             border-radius: 10px;
             border-width: 0;
@@ -76,16 +92,16 @@
             font-size: 25px;
         }
 
-        .login-btn:focus {
+        .btn:focus {
             box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
         }
 
-        .login-btn:hover {
+        .btn:hover {
             box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
             transform: translateY(-2px);
         }
 
-        .login-btn:active {
+        .btn:active {
             box-shadow: #D6D6E7 0 3px 7px inset;
             transform: translateY(2px);
         }
@@ -138,16 +154,11 @@
         }
 
         .btn-delete {
-            /* background-image: url('static/bin.png'); */
-            /* background-position: center; */
-            /* background-size: cover; */
             all: unset;
             width: 50px;
             height: 50px;
             border: none;
             font-size: 180%;
-
-            /* border-radius: 1rem; */
         }
     </style>
 </body>

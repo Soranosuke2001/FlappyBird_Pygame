@@ -85,10 +85,14 @@ def authenticate():
         return render_template('login.html', error=error)
 
     if request.method == 'GET':
-        return render_template('login.html')
+        if 'username' in session:
+            return redirect(url_for('profile'))
+        else:
+            return render_template('login.html')
 
 @app.route('/logout')
 def logout():
+    session.pop('username', None)
     return redirect(url_for('home'))
 
 @app.route('/profile')
