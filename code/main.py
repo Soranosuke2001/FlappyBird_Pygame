@@ -92,6 +92,8 @@ class Game():
 
         self.password_Label = 'Password:'
         self.password = ''
+
+        self.count = 0
                     
     def submit_Score(self):
         """
@@ -267,26 +269,25 @@ class Game():
         if 0 <= self.score < 10:
             pipe_Offset = int(randint(225, 250) / 2)
             if up_Down == 'up':
-                center_Point += int(randint(100, 150))
+                center_Point += int(randint(50, 100))
             else:
-                center_Point -= int(randint(100, 150))
+                center_Point -= int(randint(50, 100))
 
-        if 10 <= self.score <= 20:
+        elif 10 <= self.score <= 20:
             pipe_Offset = int(randint(200, 225) / 2)
             if up_Down == 'up':
                 center_Point += int(randint(100, 150))
             else:
                 center_Point -= int(randint(100, 150))
 
-        if self.score > 20:
+        elif self.score > 20:
             pipe_Offset = int(randint(180, 200) / 2)
-
             if up_Down == 'up':
                 center_Point += int(randint(150, 200))
             else:
                 center_Point -= int(randint(150, 200))
 
-        pipe_Start = window_Width + (window_Width / 20)
+        pipe_Start = window_Width + (window_Width / 15)
 
         self.up_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'up', center_Point, pipe_Start, pipe_Offset)
         self.down_Pipe = Obstacle([self.all_sprites, self.collision_sprites], self.scaling, 'down', center_Point, pipe_Start, pipe_Offset)
