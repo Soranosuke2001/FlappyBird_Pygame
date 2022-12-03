@@ -22,7 +22,7 @@ class Game():
         pygame.init()
         mixer.init()
         self.screen_Size = pygame.display.set_mode((window_Width, window_Height))
-        pygame.display.set_caption('FlappyBird Mock')
+        pygame.display.set_caption('Kirby Bird')
         self.clock = pygame.time.Clock()
 
         # setting the game state
@@ -225,7 +225,6 @@ class Game():
                 self.score = 0
                 self.game_State = 'play'
                 self.play_Game = False
-                self.score_Offset = pygame.time.get_ticks()
 
                 self.player = Player(self.all_sprites, self.scaling / 25)
                 
@@ -369,6 +368,7 @@ class Game():
 
                 if self.play_Game == False:
                     if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        self.score_Offset = pygame.time.get_ticks()
                         self.play_Game = True
                         self.score = 0
 
