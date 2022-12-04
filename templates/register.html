@@ -11,7 +11,7 @@
   <body>
       <div class="login_card">
           <h1>Welcome</h1>
-          <form class="user-info" action="/login" method="POST">
+          <form class="user-info" action="/register" method="POST">
               <div class="input_field">
                   <input type="text" name="username" value="" required />
                   <span></span>
@@ -22,13 +22,13 @@
                     <span></span>
                     <label>Password</label>
                 </div>
-                <input type="submit" value="Login Now" />
+                <input type="submit" value="Register Now" />
             </form>
             <div class="links">
                 <div class="password_link">Forgot Password?</div>
-                <div class="signup_link">New here?
-                    <form lass="signup-form" action="/register">
-                        <button class="sign-up">Sign-up</button>
+                <div class="signup_link">Have an account?
+                    <form lass="signup-form" action="/login">
+                        <button class="sign-up">Log-in</button>
                     </form>
                 </div>
             </div>

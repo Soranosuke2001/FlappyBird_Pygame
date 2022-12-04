@@ -95,6 +95,48 @@ def logout():
     session.pop('username', None)
     return redirect(url_for('home'))
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'GET':
+        return render_template('register.html')
+
+    if request.method == 'POST':
+        # reads the list of users in the database
+        users_List = updateDB('./database/users.json', 'r')
+
+        # checks if the username already exists
+        for user in users_List:
+
+            # returns an error message to the user if the username already exists
+            if user['username'] == request.form['username']:
+                error = "Username already exists"
+                return render_template('register.html', error=error)
+
+        # creating the dictionary for the new user
+        new_User = {
+            "username": request.form['username'],
+            "password": request.form['password']
+        }
+
+        # adding the new user to the list of users and updating the database
+        users_List.append(new_User)
+        updateDB('./database/users.json', 'w', users_List)
+
+        # updating the score database to add the new user
+        score_List = updateDB('./database/scores.json', 'r')
+
+        new_Score = {
+            f'{request.form["username"]}': []
+        }
+
+        score_List.update(new_Score)
+        print(score_List)
+        updateDB('./database/scores.json', 'w', score_List)
+        return render_template('login.html')
+
+
+
+
 @app.route('/profile')
 def profile():
     username = session.get('username', None)
@@ -109,8 +151,6 @@ def deleteScore():
     username = request.form["username"]
 
     score_List = updateDB('./database/scores.json', 'r')
-
-    # user_Scores = score_List[username]
 
     for score in score_List[username]:
         print(score)
