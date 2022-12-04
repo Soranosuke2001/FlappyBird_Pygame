@@ -8,6 +8,7 @@ app.secret_key = '123'
 def home():
     # the default sorting is set to highest to lowest scores
     current_Sort = 'reverse-true'
+    sort_Type = 'score-sort'
 
     # saving the json contents to a variable
     score_List = updateDB('./database/scores.json', 'r')
@@ -30,6 +31,7 @@ def home():
 
     # if the user clicks on the "score" label, then the score will be sorted high to low or low to high
     if request.method == 'POST' and request.form["type"] == 'score-sort':
+        sort_Type = request.form['type']
         if request.form['score'] == 'reverse-true':
             sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=False)
             current_Sort = 'reverse-false'
@@ -40,6 +42,7 @@ def home():
 
     # if the usr clicks on the "username" label, then the username will be sorted alphabetically
     elif request.method == 'POST' and request.form['type'] == 'name-sort':
+        sort_Type = request.form['type']
         if request.form['username'] =='reverse-true':
             sorted_List = alphaSort(sorted_List, 'a-z')
             current_Sort = 'reverse-false'
@@ -51,10 +54,10 @@ def home():
     # checks if the user is already logged in or not
     if 'username' in session:
         # displays the "Profile" button
-        return render_template('home.html', sorted_List=sorted_List, logged_In=True, current_Sort=current_Sort)
+        return render_template('home.html', sorted_List=sorted_List, logged_In=True, current_Sort=current_Sort, sort_Type=sort_Type)
     else:
         # displays the "Login" button
-        return render_template('home.html', sorted_List=sorted_List, logged_In=False, current_Sort=current_Sort)
+        return render_template('home.html', sorted_List=sorted_List, logged_In=False, current_Sort=current_Sort, sort_Type=sort_Type)
 
 
 @app.route('/submitscore', methods=['POST'])

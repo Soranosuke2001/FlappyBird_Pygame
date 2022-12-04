@@ -31,21 +31,30 @@
             <div class="rank-header">
                 <p class="p-header">Rank</p>
             </div>
+            {% block sort %}
             <div class="username-header">
-                <!-- <p class="p-header">Username</p> -->
-                <form action="/" method="POST" class="score-sort">
+                <form action="/" method="POST" class="name-sort">
                     <input type="text" class="p-header" name="type" value="name-sort" hidden>
                     <input type="text" class="p-header" name="username" value="{{ current_Sort }}" hidden>
-                    <button type="submit" class="p-header score-btn">Username</button>
+                    {% if current_Sort == 'reverse-false' and sort_Type == 'name-sort' %}
+                        <button type="submit" class="p-header score-btn">Username 🔻</button>
+                    {% else %}
+                        <button type="submit" class="p-header score-btn">Username 🔺</button>
+                    {% endif %}
                 </form>
             </div>
             <div class="score-header">
                 <form action="/" method="POST" class="score-sort">
                     <input type="text" class="p-header" name="type" value="score-sort" hidden>
                     <input type="text" class="p-header" name="score" value="{{ current_Sort }}" hidden>
-                    <button type="submit" class="p-header score-btn">Score</button>
+                    {% if current_Sort == 'reverse-false' and sort_Type == 'score-sort' %}
+                        <button type="submit" class="p-header score-btn">Score 🔻</button>
+                    {% else %}
+                        <button type="submit" class="p-header score-btn">Score 🔺</button>
+                    {% endif %}
                 </form>
             </div>
+            {% endblock sort %}
             <div class="date-header">
                 <p class="p-header">Date</p>
             </div>
