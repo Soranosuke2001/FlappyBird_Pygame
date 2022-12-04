@@ -528,7 +528,7 @@ class Game():
                         webbrowser.open(r"http://127.0.0.1:5000/register")
 
                     if skip_Rect.collidepoint(mouse_Pos):
-                        self.username = 'Guest' + str(randint(1, 10000000))
+                        self.username = 'Guest'
                         self.valid = 'Guest'
                         self.game_State = 'home'
                         self.home()
