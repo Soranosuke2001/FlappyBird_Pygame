@@ -166,12 +166,27 @@ def register():
         updateDB('./database/scores.json', 'w', score_List)
         return render_template('login.html')
 
-@app.route('/profile')
+@app.route('/profile', methods=['GET', 'POST'])
 def profile():
     username = session.get('username', None)
     score_List = updateDB('./database/scores.json', 'r')
     user_Scores = score_List[username]
-    return render_template('profile.html', user_Scores=user_Scores, username=username)
+
+    current_Sort = 'reverse-true'
+    if request.method == 'GET':
+        return render_template('profile.html', user_Scores=user_Scores, username=username)
+
+    elif request.method == 'POST':
+        if request.form['score'] == 'reverse-true':
+            user_Scores = sorted(user_Scores, key=lambda x: x["score"], reverse=False)
+            current_Sort = 'reverse-false'
+
+        elif request.form['score'] == 'reverse-false':
+            user_Scores = sorted(user_Scores, key=lambda x: x["score"], reverse=True)
+            current_Sort ='reverse-true'
+        
+        return render_template('profile.html', user_Scores=user_Scores, username=username, current_Sort=current_Sort)
+
 
 @app.route('/delete/score', methods=['POST'])
 def deleteScore():
