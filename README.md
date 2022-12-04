@@ -11,6 +11,7 @@
     - [Website Home Page](#website-home-page)
     - [Login/Register Page](#loginregister-page)
     - [Profile Page](#profile-page)
+
 ---
 
 ## **Kirby Bird**
@@ -74,6 +75,10 @@
 
 <p align="center"><img src="images/readme/ss8.png" width="80%" height="80%"></p>
 
+2. Clicking the "Score" button or the "Username" button will filter the list
+
+<p align="center"><img src="images/readme/ss12.png" width="80%" height="80%"></p>
+
 ### Login/Register Page
 
 1. Click on the "Login" button to be redirected to the login page.
@@ -98,7 +103,9 @@
 2. Click on the "❌" to delete a score.
     - Note: This cannot be undone.
 
-3. The "Home" button will redirect you back to the home page.
+3. Clicking on the "Score" will filter the list of scores.
+
+4. The "Home" button will redirect you back to the home page.
     - Note: The website will create a session so you will not have to log back in.
 
-4. The "Logout" button will delete the current session.
+5. The "Logout" button will delete the current session.
