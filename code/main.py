@@ -434,7 +434,12 @@ class Game():
         # loginPage user inputs
         self.arrow = '>'
         self.input_Box = 'username'
-        self.valid = 'False' # False: Has not attempted login, True: Login exists, False-Attempt: attempted login but failed
+
+        # False: Has not attempted login
+        # True: Login exists
+        # False-Attempt: attempted login but failed
+        # Guest: the user is using a guest account
+        self.valid = 'False' 
 
         self.username_Label = 'Username:'
         self.username = ''
@@ -445,6 +450,7 @@ class Game():
         arrow_yPos = window_Height * 5/16 
 
         register_Text = 'Register Account'
+        skip_Login = 'Use Guest Account'
 
         while self.game_State == 'login':
             # setting the x position
@@ -466,7 +472,7 @@ class Game():
 
             arrow_Surface = arrow_Text_Font.render(self.arrow, False, 'white')
             register_Surface = input_Text_Font.render(register_Text, False, 'white')
-
+            skip_Surface = input_Text_Font.render(skip_Login, False, 'white')
 
             # # setting the location of the text input box and the arrow
             username_Label_Rect = username_Label_Surface.get_rect(midleft = (x, window_Height * 4/16))
@@ -477,6 +483,7 @@ class Game():
 
             arrow_Rect = arrow_Surface.get_rect(midright = (x - 20, arrow_yPos))
             register_Rect = register_Surface.get_rect(midleft = (x + 140, window_Height * 10/16))
+            skip_Rect = skip_Surface.get_rect(midleft = (x + 150, window_Height * 15/16))
 
             # # displaying the text and the arrow on the screen
             self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
@@ -487,6 +494,7 @@ class Game():
 
             self.screen_Size.blit(arrow_Surface, arrow_Rect)
             self.screen_Size.blit(register_Surface, register_Rect)
+            self.screen_Size.blit(skip_Surface, skip_Rect)
 
             # displays the error message if the user entered an invalid user account
             if self.valid == 'False-Attempt' or self.valid == 'False-Attempt-Notice':
@@ -509,6 +517,12 @@ class Game():
                     # opens the register page
                     if register_Rect.collidepoint(mouse_Pos):
                         webbrowser.open(r"http://127.0.0.1:5000/register")
+
+                    if skip_Rect.collidepoint(mouse_Pos):
+                        self.username = 'Guest' + str(randint(1, 10000000))
+                        self.valid = 'Guest'
+                        self.game_State = 'home'
+                        self.home()
 
                 # check if the state is in either username or password input
                 if self.input_Box == 'username' and event.type == pygame.KEYDOWN:
