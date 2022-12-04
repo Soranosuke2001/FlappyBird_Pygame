@@ -32,6 +32,11 @@
                     </form>
                 </div>
             </div>
+            <div class="cancel-container">
+                <form action="/" method="GET" class="cancel-form">
+                    <button class="cancel-btn">Cancel</button>
+                </form>
+            </div>
         </div>  
         {% if error %}
         <div class="error">
@@ -194,6 +199,24 @@
     .error {
         font-size: 20px;
         color: red;
+    }
+
+    .cancel-container {
+        text-align: center;
+        color: white;
+        font-size: 20px;
+        padding-bottom: 10px;
+    }
+
+    .cancel-btn {
+        all: unset;
+    }
+
+    .cancel-btn:hover {
+        background-color: white;
+        color: black;
+        border-radius: 0.5em;
+        padding: 3px;
     }
   </style>
 </html>
