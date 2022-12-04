@@ -195,16 +195,25 @@ class Game():
             self.screen_Size.blit(self.game_Over_Img_Scaled, self.game_Over_Img_Rect)
             self.screen_Size.blit(self.score_Text, self.score_Text_Rect)
 
+            # setting up the user input box to submit a username
+            input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 35)
+
             # checks if the usr submitted a score or not
-            if self.user_Submit == False:
-                # setting up the user input box to submit a username
-                input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 35)
+            if self.user_Submit == False and self.valid != 'Guest':
 
                 # user input instructions
                 input_Notes_Surface = input_Notes_Font.render('Press "Enter" to submit score', False, 'white')
                 input_Notes_Rect = input_Notes_Surface.get_rect(midtop = (window_Width / 2, window_Height * 5/12))
 
                 self.screen_Size.blit(input_Notes_Surface, input_Notes_Rect)
+            
+            # if the player is using a guest account, the user will not be able to submit a score
+            elif self.valid == 'Guest':
+                not_Submittable = 'Guest users cannot submit scores'
+                not_Submittable_Surface = input_Notes_Font.render(not_Submittable, True, 'white')
+                not_Submittable_Rect = not_Submittable_Surface.get_rect(midtop = (window_Width / 2, window_Height * 6/12))
+
+                self.screen_Size.blit(not_Submittable_Surface, not_Submittable_Rect)
             
             # displays the "submitted" text if the user has submitted
             else:
@@ -233,7 +242,7 @@ class Game():
             for event in pygame.event.get():
 
                 # submits the user score achieved to the website
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN and self.valid != 'Guest':
                     self.user_Submit = True
                     self.submit_Score()
 
