@@ -134,23 +134,30 @@ class Game():
 
         Returns: None
         """
+
+        # adding the image of kirby on the home screen
+        home_Kirby_Img = pygame.image.load('../images/background/home/kirby2.png')
+        home_Kirby_Img_Scaled = pygame.transform.scale(home_Kirby_Img, (int(home_Kirby_Img.get_width() / 2), int(home_Kirby_Img.get_height() / 2)))
+        home_Kirby_Rect = home_Kirby_Img_Scaled.get_rect(midtop = (window_Width / 2, window_Height / 3))
+
+        # adding the username text
+        username = self.text_Font.render("Welcome " + self.username, True, 'white')
+        username_Rect = username.get_rect(midtop = (window_Width / 2, window_Height / 5))
+
+        # adding the score text
+
         while self.game_State == 'home':
 
-            # setting the background
+            # setting the background and the image of kirby
             self.screen_Size.blit(self.home_Bg, self.home_Bg_Rect)
-
-            # adding the image of kirby on the home screen
-            home_Kirby_Img = pygame.image.load('../images/background/home/kirby2.png')
-            home_Kirby_Img_Scaled = pygame.transform.scale(home_Kirby_Img, (int(home_Kirby_Img.get_width() / 2), int(home_Kirby_Img.get_height() / 2)))
-            home_Kirby_Rect = home_Kirby_Img_Scaled.get_rect(midtop = (window_Width / 2, window_Height / 3))
             self.screen_Size.blit(home_Kirby_Img_Scaled, home_Kirby_Rect)
+            self.screen_Size.blit(username, username_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
                 self.game_State = 'play'
                 self.score_Offset = pygame.time.get_ticks()
                 self.play()
-                
 
             # program will terminate if the user pressed the exit button
             if self.exit_Button.draw():
@@ -411,6 +418,7 @@ class Game():
                 if user["username"] == username and user["password"] == password:
                     self.valid = 'True'
 
+            # sets the status to False-Attempt to display the error message
             if self.valid != 'True':
                 self.valid = 'False-Attempt'
         
@@ -459,7 +467,7 @@ class Game():
 
             arrow_Surface = arrow_Text_Font.render(self.arrow, False, 'white')
 
-            # # setting the location of the text input box
+            # # setting the location of the text input box and the arrow
             username_Label_Rect = username_Label_Surface.get_rect(midleft = (x, window_Height * 4/16))
             username_Input_Rect = username_Input.get_rect(midleft = (x, window_Height * 5/16))
 
@@ -468,7 +476,7 @@ class Game():
 
             arrow_Rect = arrow_Surface.get_rect(midright = (x - 20, arrow_yPos))
 
-            # # displaying the text on the screen
+            # # displaying the text and the arrow on the screen
             self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
             self.screen_Size.blit(username_Input, username_Input_Rect)
 
@@ -479,7 +487,6 @@ class Game():
 
             # displays the error message if the user entered an invalid user account
             if self.valid == 'False-Attempt' or self.valid == 'False-Attempt-Notice':
-
                 self.error_Message = 'The username or password is invalid'
                 self.error_Surface = input_Text_Font.render(self.error_Message, False, 'red')
                 self.error_Rect = self.error_Surface.get_rect(midtop = (window_Width / 2, window_Height * 11/16))
@@ -513,6 +520,7 @@ class Game():
                         if event.key == pygame.K_RETURN:
                             self.checkUser(self.username, self.password)
 
+                            # if the user login was successful, redirect to the home page
                             if self.valid == 'True':
                                 self.game_State = 'home'
                                 self.home()
@@ -524,15 +532,13 @@ class Game():
                         else:
                             self.password += event.unicode
 
+                    # resets the input so the user is able to retry with a different account
                     elif self.valid == 'False-Attempt':
                         self.valid = 'False-Attempt-Notice'
                         self.input_Box = 'username'
                         self.username = ''
                         self.password = ''
                         arrow_yPos = window_Height * 5/16
-
-                        # self.loginPage()
-
 
             pygame.display.update()
 
