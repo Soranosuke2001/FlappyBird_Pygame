@@ -32,10 +32,16 @@
                 <p class="p-header">Rank</p>
             </div>
             <div class="username-header">
-                <p class="p-header">Username</p>
+                <!-- <p class="p-header">Username</p> -->
+                <form action="/" method="POST" class="score-sort">
+                    <input type="text" class="p-header" name="type" value="name-sort" hidden>
+                    <input type="text" class="p-header" name="username" value="{{ current_Sort }}" hidden>
+                    <button type="submit" class="p-header score-btn">Username</button>
+                </form>
             </div>
             <div class="score-header">
                 <form action="/" method="POST" class="score-sort">
+                    <input type="text" class="p-header" name="type" value="score-sort" hidden>
                     <input type="text" class="p-header" name="score" value="{{ current_Sort }}" hidden>
                     <button type="submit" class="p-header score-btn">Score</button>
                 </form>

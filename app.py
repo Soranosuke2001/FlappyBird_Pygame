@@ -28,14 +28,24 @@ def home():
     if request.method == 'GET':
         sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
 
-    # if the user clicks on the "score" lable, then the score will be sorted high to low or low to high
-    if request.method == 'POST':
+    # if the user clicks on the "score" label, then the score will be sorted high to low or low to high
+    if request.method == 'POST' and request.form["type"] == 'score-sort':
         if request.form['score'] == 'reverse-true':
             sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=False)
             current_Sort = 'reverse-false'
 
         elif request.form['score'] == 'reverse-false':
             sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
+            current_Sort ='reverse-true'
+
+    # if the usr clicks on the "username" label, then the username will be sorted alphabetically
+    elif request.method == 'POST' and request.form['type'] == 'name-sort':
+        if request.form['username'] =='reverse-true':
+            sorted_List = alphaSort(sorted_List, 'a-z')
+            current_Sort = 'reverse-false'
+        
+        elif request.form['username'] =='reverse-false':
+            sorted_List = alphaSort(sorted_List, 'z-a')
             current_Sort ='reverse-true'
 
     # checks if the user is already logged in or not
@@ -196,6 +206,31 @@ def updateDB(database, method, updateJSON=None):
     else:
         print('There was an error')
         return None
+
+def alphaSort(sorted_List, method):
+    user_List = []
+    for user in sorted_List:
+        user_List.append(user['username'])
+            
+    if method == 'a-z':
+        name_Sorted = sorted(user_List, reverse=False)
+
+        sorted_Names = []
+        for user in name_Sorted:
+            for og_User in sorted_List:
+                if user == og_User['username'] and og_User not in sorted_Names:
+                    sorted_Names.append(og_User)
+        return sorted_Names
+
+    elif method == 'z-a':
+        name_Sorted = sorted(user_List, reverse=True)
+
+        sorted_Names = []
+        for user in name_Sorted:
+            for og_User in sorted_List:
+                if user == og_User['username'] and og_User not in sorted_Names:
+                    sorted_Names.append(og_User)
+        return sorted_Names
 
 if __name__ == '__main__':
     app.run(debug=True)
