@@ -24,7 +24,10 @@ def home():
 
     sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
 
-    return render_template('home.html', sorted_List=sorted_List)
+    if 'username' in session:
+        return render_template('home.html', sorted_List=sorted_List, logged_In=True)
+    else:
+        return render_template('home.html', sorted_List=sorted_List, logged_In=False)
 
 @app.route('/submitscore', methods=['POST'])
 def submitscore():

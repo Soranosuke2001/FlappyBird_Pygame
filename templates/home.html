@@ -10,11 +10,21 @@
     <title>Kirby Bird Scores</title>
 </head>
 <body>
-   <div class="navbar">
-       <form action="/login">
-           <button class="login-btn">Login</button>
-        </form>
-    </div>
+    {% block button %}
+        {% if logged_In %}
+        <div class="navbar">
+            <form action="/login">
+                <button class="login-btn">Profile</button>
+            </form>
+        </div>
+        {% else %}
+            <div class="navbar">
+                <form action="/login">
+                    <button class="login-btn">Login</button>
+                </form>
+            </div>
+        {% endif %}
+    {% endblock button %}
     <h1>Kirby Bird Scores</h1>
     <div class="leader-board-container">
         <div class="table-header">
