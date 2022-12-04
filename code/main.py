@@ -1,4 +1,4 @@
-import pygame, sys, time, requests, json, datetime 
+import pygame, sys, time, requests, json, datetime, webbrowser
 from pygame import mixer
 from gamesettings import *
 from homebutton import HomeButton
@@ -82,9 +82,7 @@ class Game():
 
         # enabling user text input when game is over
         self.user_Submit = False
-
-
-                    
+               
     def submit_Score(self):
         """
         Method to submit the score
@@ -446,6 +444,8 @@ class Game():
 
         arrow_yPos = window_Height * 5/16 
 
+        register_Text = 'Register Account'
+
         while self.game_State == 'login':
             # setting the x position
             x = window_Width * 1/6
@@ -465,6 +465,8 @@ class Game():
             password_Input = input_Text_Font.render(self.password, False, 'white')
 
             arrow_Surface = arrow_Text_Font.render(self.arrow, False, 'white')
+            register_Surface = input_Text_Font.render(register_Text, False, 'white')
+
 
             # # setting the location of the text input box and the arrow
             username_Label_Rect = username_Label_Surface.get_rect(midleft = (x, window_Height * 4/16))
@@ -474,6 +476,7 @@ class Game():
             password_Input_Rect = password_Input.get_rect(midleft = (x, window_Height * 8/16))
 
             arrow_Rect = arrow_Surface.get_rect(midright = (x - 20, arrow_yPos))
+            register_Rect = register_Surface.get_rect(midleft = (x + 140, window_Height * 10/16))
 
             # # displaying the text and the arrow on the screen
             self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
@@ -483,6 +486,7 @@ class Game():
             self.screen_Size.blit(password_Input, password_Input_Rect)
 
             self.screen_Size.blit(arrow_Surface, arrow_Rect)
+            self.screen_Size.blit(register_Surface, register_Rect)
 
             # displays the error message if the user entered an invalid user account
             if self.valid == 'False-Attempt' or self.valid == 'False-Attempt-Notice':
@@ -497,6 +501,14 @@ class Game():
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
+
+                # checks if the user clicked on the register link
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_Pos = event.pos
+
+                    # opens the register page
+                    if register_Rect.collidepoint(mouse_Pos):
+                        webbrowser.open(r"http://127.0.0.1:5000/register")
 
                 # check if the state is in either username or password input
                 if self.input_Box == 'username' and event.type == pygame.KEYDOWN:
