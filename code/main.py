@@ -84,6 +84,7 @@ class Game():
         self.user_Submit = False
 
         # loginPage user inputs
+        self.arrow = '>'
         self.input_Box = 'username'
         self.valid = False
 
@@ -92,8 +93,6 @@ class Game():
 
         self.password_Label = 'Password:'
         self.password = ''
-
-        self.count = 0
                     
     def submit_Score(self):
         """
@@ -421,19 +420,6 @@ class Game():
                 if user["username"] == username and user["password"] == password:
                     self.valid = True
         
-        # writing to the database if the username and password doesnt match
-        if self.valid == False:
-            with open('../database/users.json', 'w') as writeFile:
-
-                new_User = {
-                    "username": username, 
-                    "password": password
-                }
-
-                user_List.append(new_User)
-
-                json.dump(user_List, writeFile)
-
     def loginPage(self):
         """
         Method to login or sign the user up
@@ -445,8 +431,10 @@ class Game():
 
         Returns: None
         """
-        while self.game_State == 'login':
 
+        arrow_yPos = window_Height * 5/16 
+
+        while self.game_State == 'login':
             # setting the x position
             x = window_Width * 1/6
 
@@ -455,6 +443,7 @@ class Game():
 
             # # setting the font for the text input
             input_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 40)
+            arrow_Text_Font = pygame.font.Font('../font/Pixeltype.ttf', 70)
 
             # # setting the username and password input box
             username_Label_Surface = input_Text_Font.render(self.username_Label, False, 'white')
@@ -463,12 +452,16 @@ class Game():
             password_Label_Surface = input_Text_Font.render(self.password_Label, False, 'white')
             password_Input = input_Text_Font.render(self.password, False, 'white')
 
-            # # setting the location of the text input box
-            username_Label_Rect = username_Label_Surface.get_rect(topleft = (x, window_Height * 4/16))
-            username_Input_Rect = username_Input.get_rect(topleft = (x, window_Height * 5/16))
+            arrow_Surface = arrow_Text_Font.render(self.arrow, False, 'white')
 
-            password_Label_Rect = password_Label_Surface.get_rect(topleft = (x, window_Height * 8/16))
-            password_Input_Rect = password_Input.get_rect(topleft = (x, window_Height * 9/16))
+            # # setting the location of the text input box
+            username_Label_Rect = username_Label_Surface.get_rect(midleft = (x, window_Height * 4/16))
+            username_Input_Rect = username_Input.get_rect(midleft = (x, window_Height * 5/16))
+
+            password_Label_Rect = password_Label_Surface.get_rect(midleft = (x, window_Height * 7/16))
+            password_Input_Rect = password_Input.get_rect(midleft = (x, window_Height * 8/16))
+
+            arrow_Rect = arrow_Surface.get_rect(midright = (x - 20, arrow_yPos))
 
             # # displaying the text on the screen
             self.screen_Size.blit(username_Label_Surface, username_Label_Rect)
@@ -476,6 +469,8 @@ class Game():
 
             self.screen_Size.blit(password_Label_Surface, password_Label_Rect)
             self.screen_Size.blit(password_Input, password_Input_Rect)
+
+            self.screen_Size.blit(arrow_Surface, arrow_Rect)
 
             for event in pygame.event.get():
 
@@ -490,6 +485,7 @@ class Game():
                     # if the enter key is pressed then change the input box to the password
                     if event.key == pygame.K_RETURN:
                         self.input_Box = 'password'
+                        arrow_yPos = window_Height * 8/16
 
                     # deletes the last character from the string
                     elif event.key == pygame.K_BACKSPACE:
