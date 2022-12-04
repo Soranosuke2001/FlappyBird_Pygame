@@ -4,8 +4,11 @@ import json
 app = Flask(__name__)
 app.secret_key = '123'
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def home():
+    # the default sorting is set to highest to lowest scores
+    current_Sort = 'reverse-true'
+
     # saving the json contents to a variable
     score_List = updateDB('./database/scores.json', 'r')
     users = score_List.keys()
@@ -22,17 +25,31 @@ def home():
             }
             sorted_List.append(user_Score)
 
-    sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
+    if request.method == 'GET':
+        sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
 
+    # if the user clicks on the "score" lable, then the score will be sorted high to low or low to high
+    if request.method == 'POST':
+        if request.form['score'] == 'reverse-true':
+            sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=False)
+            current_Sort = 'reverse-false'
+
+        elif request.form['score'] == 'reverse-false':
+            sorted_List = sorted(sorted_List, key=lambda x: x["score"], reverse=True)
+            current_Sort ='reverse-true'
+
+    # checks if the user is already logged in or not
     if 'username' in session:
-        return render_template('home.html', sorted_List=sorted_List, logged_In=True)
+        # displays the "Profile" button
+        return render_template('home.html', sorted_List=sorted_List, logged_In=True, current_Sort=current_Sort)
     else:
-        return render_template('home.html', sorted_List=sorted_List, logged_In=False)
+        # displays the "Login" button
+        return render_template('home.html', sorted_List=sorted_List, logged_In=False, current_Sort=current_Sort)
+
 
 @app.route('/submitscore', methods=['POST'])
 def submitscore():
     data = request.json
-    print(data)
 
     # read the contents of the scores.json file
     score_List = updateDB('./database/scores.json', 'r')
