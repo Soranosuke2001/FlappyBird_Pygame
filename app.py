@@ -29,6 +29,7 @@ def home():
 @app.route('/submitscore', methods=['POST'])
 def submitscore():
     data = request.json
+    print(data)
 
     # read the contents of the scores.json file
     score_List = updateDB('./database/scores.json', 'r')
@@ -37,7 +38,7 @@ def submitscore():
     user_List = score_List.keys()
 
     # if the username already exists, add the score to the list of scores in the database
-    if data["username"] in user_List:
+    if len(score_List[data['username']]) > 0:
 
         print(score_List[data["username"]][-1])
 
@@ -53,12 +54,13 @@ def submitscore():
     
     else:
         # creating the instance of the user score
-        user_Score = [{
-                "score": data["score"],
-                "date": data["date"]
-        }]
+        user_Score = {
+            "id": 1,
+            "score": data["score"],
+            "date": data["date"]
+        }
 
-        score_List[data["username"]] = user_Score
+        score_List[data["username"]].append(user_Score)
 
     # writes the new score that was added to the database
     updateDB('./database/scores.json', 'w', score_List)
@@ -125,17 +127,14 @@ def register():
         # updating the score database to add the new user
         score_List = updateDB('./database/scores.json', 'r')
 
+        # creating a new list of scores for the new user and updating the database
         new_Score = {
             f'{request.form["username"]}': []
         }
 
         score_List.update(new_Score)
-        print(score_List)
         updateDB('./database/scores.json', 'w', score_List)
         return render_template('login.html')
-
-
-
 
 @app.route('/profile')
 def profile():

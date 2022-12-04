@@ -103,8 +103,7 @@ class Game():
             url = 'http://127.0.0.1:5000/submitscore'
 
             # getting the current date and time info
-            dateInfo = datetime.datetime.now()
-            date = f"{dateInfo.month}-{dateInfo.day}-{dateInfo.year} {dateInfo.hour}:{dateInfo.minute}"
+            date = datetime.datetime.now().strftime('%m-%d-%Y %H:%M')
 
             # creating the json object ot send as a POST request
             dict = {
