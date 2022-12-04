@@ -83,16 +83,7 @@ class Game():
         # enabling user text input when game is over
         self.user_Submit = False
 
-        # loginPage user inputs
-        self.arrow = '>'
-        self.input_Box = 'username'
-        self.valid = False
 
-        self.username_Label = 'Username:'
-        self.username = ''
-
-        self.password_Label = 'Password:'
-        self.password = ''
                     
     def submit_Score(self):
         """
@@ -418,7 +409,10 @@ class Game():
             # checks if there is a matching username and password in the database
             for user in user_List:
                 if user["username"] == username and user["password"] == password:
-                    self.valid = True
+                    self.valid = 'True'
+
+            if self.valid != 'True':
+                self.valid = 'False-Attempt'
         
     def loginPage(self):
         """
@@ -431,6 +425,17 @@ class Game():
 
         Returns: None
         """
+
+        # loginPage user inputs
+        self.arrow = '>'
+        self.input_Box = 'username'
+        self.valid = 'False' # False: Has not attempted login, True: Login exists, False-Attempt: attempted login but failed
+
+        self.username_Label = 'Username:'
+        self.username = ''
+
+        self.password_Label = 'Password:'
+        self.password = ''
 
         arrow_yPos = window_Height * 5/16 
 
@@ -472,6 +477,14 @@ class Game():
 
             self.screen_Size.blit(arrow_Surface, arrow_Rect)
 
+            # displays the error message if the user entered an invalid user account
+            if self.valid == 'False-Attempt' or self.valid == 'False-Attempt-Notice':
+
+                self.error_Message = 'The username or password is invalid'
+                self.error_Surface = input_Text_Font.render(self.error_Message, False, 'red')
+                self.error_Rect = self.error_Surface.get_rect(midtop = (window_Width / 2, window_Height * 11/16))
+                self.screen_Size.blit(self.error_Surface, self.error_Rect)
+
             for event in pygame.event.get():
 
                 # exits the game gracefully
@@ -493,19 +506,33 @@ class Game():
                     else:
                         self.username += event.unicode
     
-                elif self.input_Box == 'password' and event.type == pygame.KEYDOWN:
+                elif self.input_Box == 'password':
+                    if event.type == pygame.KEYDOWN:
 
-                    # if the return key is pressed then navigate to the home page
-                    if event.key == pygame.K_RETURN:
-                        self.checkUser(self.username, self.password)
-                        self.game_State = 'home'
-                        self.home()
-                    
-                    # deletes a last character from the string
-                    elif event.key == pygame.K_BACKSPACE:
-                        self.password = self.password[:-1]
-                    else:
-                        self.password += event.unicode
+                        # if the return key is pressed then navigate to the home page
+                        if event.key == pygame.K_RETURN:
+                            self.checkUser(self.username, self.password)
+
+                            if self.valid == 'True':
+                                self.game_State = 'home'
+                                self.home()
+                        
+                        # deletes a last character from the string
+                        elif event.key == pygame.K_BACKSPACE:
+                            self.password = self.password[:-1]
+
+                        else:
+                            self.password += event.unicode
+
+                    elif self.valid == 'False-Attempt':
+                        self.valid = 'False-Attempt-Notice'
+                        self.input_Box = 'username'
+                        self.username = ''
+                        self.password = ''
+                        arrow_yPos = window_Height * 5/16
+
+                        # self.loginPage()
+
 
             pygame.display.update()
 
