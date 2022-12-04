@@ -7,7 +7,10 @@
     - [Home Screen](#home-screen)
     - [Play Screen](#play-screen)
     - [Game Over Screen](#game-over-screen)
-
+- [Kirby Bird Website](#kirby-bird-website)
+    - [Website Home Page](#website-home-page)
+    - [Login/Register Page](#loginregister-page)
+    - [Profile Page](#profile-page)
 ---
 
 ## **Kirby Bird**
@@ -26,36 +29,76 @@
 
 3. If the username or password is not correct it will show an error.
 
-![login error screen shot](images/readme/ss2.png)
+<p align="center"><img src="images/readme/ss2.png" width="40%" height="40%"></p>
 
 ### Home Screen
 
 1. You can play the game by clicking the "Start" button or click the "Exit" button to quit the game.
 
-![home page screen shot](images/readme/ss3.png)
+<p align="center"><img src="images/readme/ss3.png" width="40%" height="40%"></p>
 
 ### Play Screen
 
 1. Press the "Space" key to play the game. The game will not begin until the "Space" key is pressed.
 
-![play screen shot](images/readme/ss4.png)
+<p align="center"><img src="images/readme/ss4.png" width="40%" height="40%"></p>
 
 2. The game will end under the following conditions:
     - Kirby touches a pipe
     - Kirby touches the top of the screen
     - Kirby touches the bottom of the screen
 
-![play screen shot](images/readme/ss5.png)
+<p align="center"><img src="images/readme/ss5.png" width="40%" height="40%"></p>
 
 ### Game Over Screen
 
 1. Once the game ends, if you are signed into a account, you can submit your score.
     - Note: Press the "Enter" key to submit your score.
 
-![end game screen shot](images/readme/ss6.png)
+<p align="center"><img src="images/readme/ss6.png" width="40%" height="40%"></p>
 
 2. If successful, the status on the screen will be updated.
 
-![submit score screen shot](images/readme/ss7.png)
+<p align="center"><img src="images/readme/ss7.png" width="40%" height="40%"></p>
 
 3. You can click the "Start" button to start the game again or quit the game by clicking the "Exit" button.
+
+---
+
+## Kirby Bird Website
+
+### Website Home Page
+
+1. The scoreboard for all the users are displayed here.
+    - Note: The score is ordered from the highest to the lowest.
+
+<p align="center"><img src="images/readme/ss8.png" width="80%" height="80%"></p>
+
+### Login/Register Page
+
+1. Click on the "Login" button to be redirected to the login page.
+
+2. Enter a username and password if you have an existing account.
+
+<p align="center"><img src="images/readme/ss9.png" width="80%" height="80%"></p>
+
+3. Click on the "Sign-up" ot register for an account.
+    - Note: If you enter a username and password, you will be redirected to the login page.
+
+<p align="center"><img src="images/readme/ss10.png" width="80%" height="80%"></p>
+
+4. Click on the "Cancel" button to be redirected back to the home page.
+
+### Profile Page
+
+1. You can view the list of all your submitted scores here.
+
+<p align="center"><img src="images/readme/ss11.png" width="80%" height="80%"></p>
+
+2. Click on the "❌" to delete a score.
+    - Note: This cannot be undone.
+
+3. The "Home" button will redirect you back to the home page.
+    - Note: The website will create a session so you will not have to log back in.
+
+4. The "Logout" button will delete the current session.
