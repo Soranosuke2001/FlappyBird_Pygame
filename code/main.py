@@ -40,6 +40,12 @@ class Game():
         self.home_Bg = pygame.image.load('../images/background/home/background.jpg').convert()
         self.home_Bg_Rect = self.home_Bg.get_rect(topleft = (0, 0))
 
+        # adding the button image to the leaderboard website
+        self.leaderboard_Btn = pygame.image.load('../images/background/home/score.png').convert()
+        self.leaderboard_Btn_Scaled = pygame.transform.scale(self.leaderboard_Btn, (int(self.leaderboard_Btn.get_width() / 3), int(self.leaderboard_Btn.get_height() / 3)))
+        self.leaderboard_Rect = self.leaderboard_Btn_Scaled.get_rect(topleft = (window_Width * 3/5, 20))
+
+
         # creating the button instance for the homepage
         HomeButton(window_Width / 2, window_Height * 2/5, self.start_Btn, self.screen_Size, 0.9)
         HomeButton(window_Width / 2, window_Height * 3/5, self.exit_Btn, self.screen_Size, 0.9)
@@ -143,11 +149,6 @@ class Game():
         username = self.text_Font.render("Welcome " + self.username, True, 'white')
         username_Rect = username.get_rect(midtop = (window_Width / 2, window_Height / 5))
 
-        # adding the link to the leaderboard website
-        self.leaderboard_Btn = pygame.image.load('../images/background/home/score.png').convert()
-        self.leaderboard_Btn_Scaled = pygame.transform.scale(self.leaderboard_Btn, (int(self.leaderboard_Btn.get_width() / 3), int(self.leaderboard_Btn.get_height() / 3)))
-        self.leaderboard_Rect = self.leaderboard_Btn_Scaled.get_rect(topleft = (window_Width * 3/5, 30))
-
         while self.game_State == 'home':
 
             # setting the background and the image of kirby
@@ -174,7 +175,7 @@ class Game():
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     mouse_Pos = event.pos
 
-                    # opens the register page
+                    # opens the score board page
                     if self.leaderboard_Rect.collidepoint(mouse_Pos):
                         webbrowser.open(r"http://127.0.0.1:5000/")
 
@@ -208,6 +209,7 @@ class Game():
             self.score_Text_Rect = self.score_Text.get_rect(midtop = (window_Width / 2, window_Height * 4/12))
             self.screen_Size.blit(self.game_Over_Img_Scaled, self.game_Over_Img_Rect)
             self.screen_Size.blit(self.score_Text, self.score_Text_Rect)
+            self.screen_Size.blit(self.leaderboard_Btn_Scaled, self.leaderboard_Rect)
 
             # setting up the user input box to submit a username
             input_Notes_Font = pygame.font.Font('../font/Pixeltype.ttf', 35)
@@ -254,6 +256,14 @@ class Game():
 
             # checks the events while game is running
             for event in pygame.event.get():
+
+                # checks if the user clicked on the score button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_Pos = event.pos
+
+                    # opens the score board page
+                    if self.leaderboard_Rect.collidepoint(mouse_Pos):
+                        webbrowser.open(r"http://127.0.0.1:5000/")
 
                 # submits the user score achieved to the website
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN and self.valid != 'Guest':
