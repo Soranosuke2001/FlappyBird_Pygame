@@ -87,16 +87,18 @@
 
 1. Click on the "Login" button to be redirected to the login page.
 
-2. Enter a username and password if you have an existing account.
+2. Click on the "Register" button to be redirected to the register page.
+
+3. Enter a username and password if you have an existing account.
 
 <p align="center"><img src="images/readme/ss9.png" width="80%" height="80%"></p>
 
-3. Click on the "Sign-up" ot register for an account.
+4. Click on the "Sign-up" ot register for an account.
     - Note: If you enter a username and password, you will be redirected to the login page.
 
 <p align="center"><img src="images/readme/ss10.png" width="80%" height="80%"></p>
 
-4. Click on the "Cancel" button to be redirected back to the home page.
+5. Click on the "Cancel" button to be redirected back to the home page.
 
 ### Profile Page
 
