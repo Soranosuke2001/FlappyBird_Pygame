@@ -41,8 +41,8 @@ class Game():
         self.home_Bg_Rect = self.home_Bg.get_rect(topleft = (0, 0))
 
         # creating the button instance for the homepage
-        self.start_Button = HomeButton(window_Width / 2, window_Height * 2/5, self.start_Btn, self.screen_Size, 0.9)
-        self.exit_Button = HomeButton(window_Width / 2, window_Height * 3/5, self.exit_Btn, self.screen_Size, 0.9)
+        HomeButton(window_Width / 2, window_Height * 2/5, self.start_Btn, self.screen_Size, 0.9)
+        HomeButton(window_Width / 2, window_Height * 3/5, self.exit_Btn, self.screen_Size, 0.9)
 
         # importing game over image for the game over page
         game_Over_Img = pygame.image.load('../images/background/done/game_over.jpg').convert()
@@ -82,6 +82,8 @@ class Game():
 
         # enabling user text input when game is over
         self.user_Submit = False
+
+        
                
     def submit_Score(self):
         """
@@ -141,7 +143,10 @@ class Game():
         username = self.text_Font.render("Welcome " + self.username, True, 'white')
         username_Rect = username.get_rect(midtop = (window_Width / 2, window_Height / 5))
 
-        # adding the score text
+        # adding the link to the leaderboard website
+        self.leaderboard_Btn = pygame.image.load('../images/background/home/score.png').convert()
+        self.leaderboard_Btn_Scaled = pygame.transform.scale(self.leaderboard_Btn, (int(self.leaderboard_Btn.get_width() / 3), int(self.leaderboard_Btn.get_height() / 3)))
+        self.leaderboard_Rect = self.leaderboard_Btn_Scaled.get_rect(topleft = (window_Width * 3/5, 30))
 
         while self.game_State == 'home':
 
@@ -149,6 +154,7 @@ class Game():
             self.screen_Size.blit(self.home_Bg, self.home_Bg_Rect)
             self.screen_Size.blit(home_Kirby_Img_Scaled, home_Kirby_Rect)
             self.screen_Size.blit(username, username_Rect)
+            self.screen_Size.blit(self.leaderboard_Btn_Scaled, self.leaderboard_Rect)
 
             # the game will start playing when the user pressed the start button
             if self.start_Button.draw():
@@ -163,6 +169,14 @@ class Game():
 
             # checks the events while game is running
             for event in pygame.event.get():
+
+                # checks if the user clicked on the score button
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    mouse_Pos = event.pos
+
+                    # opens the register page
+                    if self.leaderboard_Rect.collidepoint(mouse_Pos):
+                        webbrowser.open(r"http://127.0.0.1:5000/")
 
                 # closes the window
                 if event.type == pygame.QUIT:
