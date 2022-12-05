@@ -14,13 +14,16 @@
         {% if logged_In %}
         <div class="navbar">
             <form action="/login">
-                <button class="login-btn">Profile</button>
+                <button class="nav-btn profile-btn">Profile</button>
             </form>
         </div>
         {% else %}
             <div class="navbar">
+                <form action="/register">
+                    <button class="nav-btn register-btn">Register</button>
+                </form>
                 <form action="/login">
-                    <button class="login-btn">Login</button>
+                    <button class="nav-btn login-btn">Login</button>
                 </form>
             </div>
         {% endif %}
@@ -79,10 +82,27 @@
         {% endblock %}
     </div>
     <style>
+        .profile-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
         .login-btn {
             position: fixed;
             right: 20px;
             top: 20px;
+        }
+
+        .register-btn {
+            position: fixed;
+            right: 20px;
+            top: 80px;
+        }
+
+        .nav-btn {
+            /* position: fixed;
+            right: 20px;
+            top: 20px; */
             background-color: #FCFCFD;
             border-radius: 10px;
             border-width: 0;
@@ -96,16 +116,16 @@
             font-size: 25px;
         }
 
-        .login-btn:focus {
+        .nav-btn:focus {
             box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
         }
 
-        .login-btn:hover {
+        .nav-btn:hover {
             box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
             transform: translateY(-2px);
         }
 
-        .login-btn:active {
+        .nav-btn:active {
             box-shadow: #D6D6E7 0 3px 7px inset;
             transform: translateY(2px);
         }
