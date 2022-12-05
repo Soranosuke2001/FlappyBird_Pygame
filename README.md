@@ -38,6 +38,8 @@
 
 <p align="center"><img src="images/readme/ss3.png" width="40%" height="40%"></p>
 
+2. Click on the "score" button to be redirected to the leader board website.
+
 ### Play Screen
 
 1. Press the "Space" key to play the game. The game will not begin until the "Space" key is pressed.
@@ -63,6 +65,8 @@
 <p align="center"><img src="images/readme/ss7.png" width="40%" height="40%"></p>
 
 3. You can click the "Start" button to start the game again or quit the game by clicking the "Exit" button.
+
+4. Click on the "score" button to be redirected to the leader board website.
 
 ---
 
